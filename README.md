@@ -1,6 +1,6 @@
 # 🔮 Amethyst
 
-A version manager, and project manager for [Amber](https://amber-lang.com).
+A version manager, and project manager for [Amber](https://amber-lang.com), written in 100% Amber.
 
 ## 🚧 Under Construction 🚧
 This project is under construction, and is not ready for regular use. <br />
