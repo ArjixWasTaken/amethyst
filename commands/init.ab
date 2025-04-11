@@ -1,0 +1,46 @@
+#!/bin/env amber
+
+import { input_prompt } from "std/env"
+import { dir_exists, file_exists, file_write } from "std/fs"
+import { join } from "std/text"
+
+import { info, error } from "../lib/utils.ab"
+import { basename, realpath, is_dir_empty } from "../lib/path.ab"
+
+pub fun cmd_init(arguments: [Text]): Null {
+    let dest = input_prompt("Project directory: ")
+    loop {
+        if {
+            file_exists(dest): info("A file with that name already exists.")
+            dir_exists(dest) and not is_dir_empty(dest): info("Directory chosen already exists and is not empty.")
+            else: break
+        }
+
+        dest = input_prompt("Project directory: ")
+    }
+
+    let project = basename(realpath(dest))
+    if dest != "." {
+        dest = project
+        trust $ mkdir "{dest}" $
+    }
+
+    // Create project structure
+    trust {
+        $ mkdir -p "{dest}"/\{lib,} $
+        $ touch "{dest}"/\{amethyst.conf,{dest}} $
+
+        // set latest amber version
+        trust file_write("{dest}/amethyst.conf", join([
+            "[amethyst]",
+            "file-format = 1",
+            "",
+
+            "[project]",
+            "name = {project}",
+            "amber-version = 0.4.0-alpha",
+        ], "\n"))
+    }
+
+    exit(0)
+}

@@ -1,0 +1,7 @@
+#!/bin/env amber
+
+import { info, error } from "../lib/utils.ab"
+
+pub fun cmd_help(arguments: [Text]): Null {
+    info("help!")
+}

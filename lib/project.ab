@@ -1,0 +1,28 @@
+#!/bin/env amber
+
+import { dir_exists, file_exists } from "std/fs"
+import { split, join } from "std/text"
+import { array_pop } from "std/array"
+
+import { parent_dir } from "./path.ab"
+
+pub fun locate_project(project_file_name: Text): [Text] {
+    let cwd = trust $ pwd $
+    loop {
+        if not dir_exists(cwd) {
+            return ["no", ""]
+        }
+
+        if file_exists("{cwd}/{project_file_name}") {
+            return ["yes", cwd]
+        }
+
+        if cwd == "/" {
+            break
+        }
+
+        cwd = parent_dir(cwd)
+    }
+
+    return ["no", ""]
+}

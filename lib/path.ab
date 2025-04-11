@@ -1,0 +1,27 @@
+#!/bin/env amber
+
+import { file_glob } from "std/fs"
+
+import { error } from "./utils.ab"
+
+pub fun parent_dir(dir: Text): Text {
+    return trust $ python -c "print(__import__('os').path.abspath(\\\"{dir}/..\\\"))" $
+}
+
+pub fun relative(path: Text): Text {
+    return trust $ python -c "print(__import__('os').path.relpath(\\\"{path}\\\", \\\".\\\"))" $
+}
+
+pub fun realpath(path: Text): Text {
+    return trust $ realpath "{path}" $
+}
+
+pub fun basename(path: Text): Text {
+    return trust $ basename "{path}" $
+}
+
+pub fun is_dir_empty(path: Text): Bool {
+    const items = trust file_glob("{path}/*")
+
+    return len(items) == 0
+}

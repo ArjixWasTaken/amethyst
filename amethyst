@@ -1,0 +1,23 @@
+#!/bin/env amber
+
+import { array_shift } from "std/array"
+
+import { cmd_help } from "./commands/help.ab"
+import { cmd_init } from "./commands/init.ab"
+import { cmd_info } from "./commands/info.ab"
+
+main(args) {
+    let arguments = args
+    array_shift(arguments)
+
+    let arg = array_shift(arguments)
+
+    if {
+        // arg == "help": cmd_help(arguments)
+        arg == "init": cmd_init(arguments)
+        arg == "info": cmd_info(arguments)
+    }
+
+    cmd_help(arguments)
+    exit(1)
+}
