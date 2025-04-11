@@ -1,6 +1,7 @@
 #!/bin/env amber
 
 import { array_shift } from "std/array"
+import { file_exists } from "std/fs"
 
 import { cmd_help } from "./commands/help.ab"
 import { cmd_init } from "./commands/init.ab"
@@ -12,12 +13,16 @@ main(args) {
 
     let arg = array_shift(arguments)
 
+    // // TODO: Invoke script, using the appropriate Amber version.
+    // if file_exists(arg) {
+    //     trust $ amber "{arg}" $
+    //     exit(0)
+    // }
+
     if {
+        // // TODO: `help` doesn't work if amber is directly executing this file
         // arg == "help": cmd_help(arguments)
         arg == "init": cmd_init(arguments)
         arg == "info": cmd_info(arguments)
     }
-
-    cmd_help(arguments)
-    exit(1)
 }
