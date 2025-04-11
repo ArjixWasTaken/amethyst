@@ -28,17 +28,27 @@ pub fun cmd_init(arguments: [Text]): Null {
     // Create project structure
     trust {
         $ mkdir -p "{dest}"/\{lib,} $
-        $ touch "{dest}"/\{amethyst.conf,{dest}} $
+        $ touch "{dest}"/\{amethyst.ini,{dest}} $
 
         // set latest amber version
-        trust file_write("{dest}/amethyst.conf", join([
+        trust file_write("{dest}/amethyst.ini", join([
             "[amethyst]",
             "file-format = 1",
+            "amber-version = 0.4.0-alpha",
             "",
 
             "[project]",
             "name = {project}",
-            "amber-version = 0.4.0-alpha",
+            "version = 0.1.0",
+            ""
+        ], "\n"))
+
+        trust file_write("{dest}/{dest}", join([
+            "#!/bin/env amethyst",
+            "",
+            "main(args) \{",
+            "    echo \"Hello Amber!\"",
+            "}"
         ], "\n"))
     }
 
