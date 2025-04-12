@@ -2,6 +2,8 @@
 
 import { array_shift } from "std/array"
 import { file_exists } from "std/fs"
+import { is_command } from "std/env"
+import { join } from "std/text"
 
 import { error } from "./lib/utils.ab"
 import { locate_project, get_project_property } from "./lib/project.ab"
@@ -10,6 +12,20 @@ import { is_available_locally, execute_script } from "./lib/amber_manager.ab"
 import { cmd_help } from "./commands/help.ab"
 import { cmd_init } from "./commands/init.ab"
 import { cmd_info } from "./commands/info.ab"
+
+// TODO: Remove any unnecessary dependencies
+const deps = ["uname", "curl", "jq", "python"]
+let missing = [Text]
+
+for dep in deps {
+    if not is_command(dep) {
+        missing += [dep]
+    }
+}
+
+if len(missing) > 0 {
+    error("Missing dependencies: {join(missing, ",")}")
+}
 
 main(args) {
     let arguments = args

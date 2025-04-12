@@ -8,33 +8,23 @@ import { realpath } from "./path.ab"
 
 pub fun get_os(): Text {
     // Determine OS type
-    let os_type = $ uname -s $ failed {
-        echo "Failed to determine OS type (using `uname` command)."
-        echo "Please try again or make sure you have it installed."
-        exit 1
-    }
-    if os_type == "Darwin":
-        return "apple-darwin"
-    
-    if os_type != "Linux" {
-        echo "Unsupported OS type: {os_type}"
-        echo "Please try again or use another download method."
-        exit 1
-    }
-    
-    if not has_failed("ls -l /lib | grep libc.musl"):
-        return "unknown-linux-musl"
+    const os_type = trust $ uname -s $
 
-    return "unknown-linux-gnu"
+    if {
+        os_type == "Darwin": return "apple-darwin"
+        os_type != "Linux": error("Unsupported OS type: {os_type}")
+    }
+
+    const is_musl = not has_failed("ls -l /lib | grep libc.musl")
+
+    return is_musl
+        then "unknown-linux-musl"
+        else "unknown-linux-gnu"
 }
 
 pub fun get_arch(): Text {
     // Determine architecture
-    let arch_type = $ uname -m $ failed {
-        echo "Failed to determine architecture."
-        echo "Please try again or use another download method."
-        exit 1
-    }
+    const arch_type = trust $ uname -m $
 
     let arch = array_contains(["arm64", "aarch64"], arch_type)
         then "aarch64"
