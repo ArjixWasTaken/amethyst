@@ -1,13 +1,13 @@
 import { file_exists } from "std/fs"
 
-import { error } from "./utils.ab"
+import { fatal } from "./utils.ab"
 import { get_github_tags } from "./github.ab"
 import { get_amethyst_data_dir } from "./environment.ab"
 
 pub fun is_available_locally(version: Text): Bool {
     const data_dir = get_amethyst_data_dir()
     $ mkdir -p "{data_dir}/amber" $ failed {
-        error("Failed to create {data_dir}/amber directory.")
+        fatal("Failed to create {data_dir}/amber directory.")
     }
 
     return file_exists("{data_dir}/amber/{version}.bin")
@@ -24,7 +24,7 @@ pub fun is_available_remotely(version: Text): Bool {
 
 pub fun execute_script(amber: Text, script: Text): Null {
     if not is_available_locally(amber) {
-        error("Amber version {amber} is not available locally.")
+        fatal("Amber version {amber} is not available locally.")
     }
 
     const data_dir = get_amethyst_data_dir()

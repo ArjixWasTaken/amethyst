@@ -2,6 +2,7 @@ import { styled, env_var_get } from "std/env"
 
 const BOLD = 1
 const FG_RED = 31
+const FG_YELLOW = 33
 const FG_WHITE = 37
 const BG_BLACK = 40
 
@@ -12,8 +13,15 @@ pub fun info(message: Text): Null {
     trust $ printf "{items}" $
 }
 
-pub fun error(message: Text): Null {
-    const tag = styled("error", BOLD, FG_RED, BG_BLACK)
+pub fun warn(message: Text): Null {
+    const tag = styled("warn", BOLD, FG_YELLOW, BG_BLACK)
+    const items = ["[{tag}]: %s\n", message]
+
+    trust $ printf "{items}" $
+}
+
+pub fun fatal(message: Text): Null {
+    const tag = styled("fatal", BOLD, FG_RED, BG_BLACK)
     const items = ["[{tag}]: %s\n", message]
 
     trust $ printf "{items}" $

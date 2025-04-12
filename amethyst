@@ -5,7 +5,7 @@ import { file_exists } from "std/fs"
 import { is_command } from "std/env"
 import { join } from "std/text"
 
-import { error } from "./lib/utils.ab"
+import { fatal } from "./lib/utils.ab"
 import { locate_project, get_project_property } from "./lib/project.ab"
 import { is_available_locally, execute_script } from "./lib/amber_manager.ab"
 
@@ -24,7 +24,7 @@ for dep in deps {
 }
 
 if len(missing) > 0 {
-    error("Missing dependencies: {join(missing, ",")}")
+    fatal("Missing dependencies: {join(missing, ",")}")
 }
 
 main(args) {
@@ -44,8 +44,7 @@ main(args) {
             exit(0)
         }
 
-        error("Amber version {version} is not available locally.")
-        exit(1)
+        fatal("Amber version {version} is not available locally.")
     }
 
     if {

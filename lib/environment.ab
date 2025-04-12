@@ -3,7 +3,7 @@
 import { has_failed, env_const_get } from "std/env"
 import { array_contains } from "std/array"
 
-import { info, error } from "./utils.ab"
+import { info, fatal } from "./utils.ab"
 import { realpath } from "./path.ab"
 
 pub fun get_os(): Text {
@@ -12,7 +12,7 @@ pub fun get_os(): Text {
 
     if {
         os_type == "Darwin": return "apple-darwin"
-        os_type != "Linux": error("Unsupported OS type: {os_type}")
+        os_type != "Linux": fatal("Unsupported OS type: {os_type}")
     }
 
     const is_musl = not has_failed("ls -l /lib | grep libc.musl")
@@ -38,7 +38,7 @@ pub fun get_amethyst_data_dir(): Text {
     const path = "{home}/.local/share/amethyst"
 
     $ mkdir -p "{path}" $ failed {
-        error("Failed to create {path} directory.")
+        fatal("Failed to create {path} directory.")
     }
 
     return realpath(path)

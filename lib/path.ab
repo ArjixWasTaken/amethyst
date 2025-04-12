@@ -1,6 +1,6 @@
 import { file_glob } from "std/fs"
 
-import { error } from "./utils.ab"
+import { fatal } from "./utils.ab"
 
 pub fun parent_dir(dir: Text): Text {
     return trust $ python -c "print(__import__('os').path.abspath(\\\"{dir}/..\\\"))" $
