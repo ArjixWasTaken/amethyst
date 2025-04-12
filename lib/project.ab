@@ -1,19 +1,17 @@
-#!/bin/env amber
-
 import { dir_exists, file_exists } from "std/fs"
-import { split, join } from "std/text"
+import { starts_with, ends_with, split, split_lines, join, trim, replace } from "std/text"
 import { array_pop } from "std/array"
 
 import { parent_dir } from "./path.ab"
 
-pub fun locate_project(project_file_name: Text): [Text] {
+pub fun locate_project(): [Text] {
     let cwd = trust $ pwd $
     loop {
         if not dir_exists(cwd) {
             return ["no", ""]
         }
 
-        if file_exists("{cwd}/{project_file_name}") {
+        if file_exists("{cwd}/amethyst.ini") {
             return ["yes", cwd]
         }
 
@@ -25,4 +23,45 @@ pub fun locate_project(project_file_name: Text): [Text] {
     }
 
     return ["no", ""]
+}
+
+pub fun get_project_property(project: Text, section: Text, property: Text): Text {
+    const project_file = "{project}/amethyst.ini"
+    if not file_exists(project_file) {
+        return ""
+    }
+
+    const lines = trust $ cat "{project_file}" $
+    let current_section = ""
+
+    for line in split_lines(lines) {
+        let line = trim(line)
+
+        if starts_with(line, "#") or line == "" {
+            continue
+        }
+        
+        const is_section = starts_with(line, "[") and ends_with(line, "]")
+        if is_section {
+            current_section = line
+            for i in ["[", "]"] {
+                current_section = replace(current_section, i, "")
+            }
+            continue
+        }
+
+        const segments = split(line, "=")
+        if len(segments) != 2 {
+            continue
+        }
+
+        const key = trim(segments[0])
+        const value = trim(segments[1])
+
+        if current_section == section and key == property {
+            return value
+        }
+    }
+
+    return ""
 }

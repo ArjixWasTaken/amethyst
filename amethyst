@@ -3,6 +3,10 @@
 import { array_shift } from "std/array"
 import { file_exists } from "std/fs"
 
+import { error } from "./lib/utils.ab"
+import { locate_project, get_project_property } from "./lib/project.ab"
+import { is_available_locally, execute_script } from "./lib/amber_manager.ab"
+
 import { cmd_help } from "./commands/help.ab"
 import { cmd_init } from "./commands/init.ab"
 import { cmd_info } from "./commands/info.ab"
@@ -13,15 +17,25 @@ main(args) {
 
     let arg = array_shift(arguments)
 
-    // // TODO: Invoke script, using the appropriate Amber version.
-    // if file_exists(arg) {
-    //     trust $ amber "{arg}" $
-    //     exit(0)
-    // }
+    const project = locate_project()
+    if file_exists(arg) and project[0] == "yes" {
+        const version = get_project_property(project[1], "amethyst", "amber-version")
+
+        if is_available_locally(version) {
+            execute_script(version, arg)
+            // execute_script uses exec, so really, this *is* unreachable
+            // but just in case
+            exit(0)
+        }
+
+        error("Amber version {version} is not available locally.")
+        exit(1)
+    }
 
     if {
-        // // TODO: `help` doesn't work if amber is directly executing this file
-        // arg == "help": cmd_help(arguments)
+        // TODO: `help` doesn't work if amber is directly executing this file
+        // Maybe we should report this to the amber team?
+        arg == "help": cmd_help(arguments)
         arg == "init": cmd_init(arguments)
         arg == "info": cmd_info(arguments)
     }

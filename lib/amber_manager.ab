@@ -1,0 +1,35 @@
+import {file_exists} from "std/fs"
+
+import { get_github_tags } from "./github.ab"
+import { get_amethyst_data_dir } from "./environment.ab"
+
+pub fun is_available_locally(version: Text): Bool {
+    const data_dir = get_amethyst_data_dir()
+    $ mkdir -p "{data_dir}/amber" $ failed {
+        echo "Failed to create {data_dir}/amber directory."
+        exit(1)
+    }
+
+    return file_exists("{data_dir}/amber/{version}.bin")
+}
+
+pub fun is_available_remotely(version: Text): Bool {
+    // TODO: implement this
+
+    const tags = get_github_tags("amber-lang", "amber")
+    echo tags
+
+    return true
+}
+
+pub fun execute_script(amber: Text, script: Text): Null {
+    if not is_available_locally(amber) {
+        echo "Amber version {amber} is not available locally."
+        exit(1)
+    }
+
+    const data_dir = get_amethyst_data_dir()
+    const amber = "{data_dir}/amber/{amber}.bin"
+
+    trust $ exec {amber} run "{script}" $
+}

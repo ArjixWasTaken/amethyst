@@ -1,7 +1,5 @@
-#!/bin/env amber
-
 import { input_prompt } from "std/env"
-import { dir_exists, file_exists, file_write } from "std/fs"
+import { dir_exists, file_exists, file_write, file_chmod } from "std/fs"
 import { join } from "std/text"
 
 import { info, error } from "../lib/utils.ab"
@@ -33,7 +31,6 @@ pub fun cmd_init(arguments: [Text]): Null {
         // set latest amber version
         trust file_write("{dest}/amethyst.ini", join([
             "[amethyst]",
-            "file-format = 1",
             "amber-version = 0.4.0-alpha",
             "",
 
@@ -50,6 +47,8 @@ pub fun cmd_init(arguments: [Text]): Null {
             "    echo \"Hello Amber!\"",
             "}"
         ], "\n"))
+
+        trust file_chmod("{dest}/{dest}", "+x")
     }
 
     exit(0)

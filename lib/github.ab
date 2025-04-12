@@ -1,5 +1,3 @@
-#!/bin/env amber
-
 import { split_lines } from "std/text"
 
 pub fun get_github_tags(user: Text, repo: Text): [Text] {

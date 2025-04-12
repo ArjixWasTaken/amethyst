@@ -1,10 +1,8 @@
-#!/bin/env amber
-
 import { info, error } from "../lib/utils.ab"
 import { locate_project } from "../lib/project.ab"
 
 pub fun cmd_info(arguments: [Text]): Null {
-    const project = locate_project("amethyst.ini")
+    const project = locate_project()
     if project[0] == "no" {
         error("Failed to locate an 'amethyst.ini' file, make sure you are in a project's (sub)directory.")
     }
