@@ -53,5 +53,7 @@ pub fun cmd_init(arguments: [Text]): Null {
         file_chmod("{dest}/{dest}", "+x")
     }
 
+    info("Successfully created project '{project}'")
+
     exit(0)
 }
