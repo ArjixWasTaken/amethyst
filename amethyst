@@ -10,8 +10,9 @@ import { locate_project, get_project_property } from "./lib/project.ab"
 import { is_available_locally, is_available_remotely, download, execute_script } from "./lib/amber_manager.ab"
 
 import { cmd_help } from "./commands/help.ab"
-import { cmd_init } from "./commands/init.ab"
 import { cmd_info } from "./commands/info.ab"
+import { cmd_init } from "./commands/init.ab"
+import { cmd_list } from "./commands/list.ab"
 
 // TODO: Remove any unnecessary dependencies
 const deps = ["uname", "curl", "jq", "python"]
@@ -71,6 +72,7 @@ main(args) {
         // TODO: `help` doesn't work if amber is directly executing this file
         // Maybe we should report this to the amber team?
         arg == "help": cmd_help(arguments)
+        arg == "list": cmd_list(arguments)
         arg == "init": cmd_init(arguments)
         arg == "info": cmd_info(arguments)
     }

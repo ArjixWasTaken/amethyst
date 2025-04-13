@@ -1,9 +1,10 @@
 import { split_lines } from "std/text"
 
+import { fatal } from "./utils.ab"
+
 pub fun get_github_tags(user: Text, repo: Text): [Text] {
     const json = trust $ curl -s -f "https://api.github.com/repos/{user}/{repo}/tags" $ failed {
-        echo "todo!(get_github_tags)"
-        exit(1)
+        fatal("Failed to fetch tags from GitHub API.")
     }
 
     const tags = trust $ echo "{json}" | jq '.[] | .name' -r $

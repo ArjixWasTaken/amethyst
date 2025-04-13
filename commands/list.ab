@@ -1,0 +1,47 @@
+import { array_shift, array_contains } from "std/array"
+
+import { info, fatal } from "../lib/utils.ab"
+import { get_github_tags } from "../lib/github.ab"
+import { get_local_versions } from "../lib/amber_manager.ab"
+
+fun show_help_and_exit() {
+    echo "Usage: amethyst list [--remote] [--help]"
+    echo "Options:"
+    echo "  --all     List all available amber versions"
+    echo "  --help    Show this help message and exit"
+    exit(0)
+}
+
+pub fun cmd_list(arguments: [Text]): Null {
+    let show_remote = false
+
+    loop {
+        if len(arguments) == 0 {
+            break
+        }
+
+        const arg = array_shift(arguments)
+        if {
+            arg == "--all": show_remote = true
+            arg == "--help": show_help_and_exit()
+            else: fatal("Unknown argument: " + arg)
+        }
+    }
+
+    const local_versions = get_local_versions()
+    if not show_remote {
+        info("Listing local amber versions:")
+        for version in local_versions {
+            echo "- {version}"
+        }
+
+        return null
+    }
+
+    const tags = get_github_tags("amber-lang", "amber")
+    for tag in tags {
+        const is_local = array_contains(local_versions, tag)
+
+        echo "- {tag} {is_local then "[installed]" else ""}"
+    }
+}
