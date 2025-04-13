@@ -8,7 +8,6 @@ pub fun cmd_info(arguments: [Text]): Null {
     }
 
     info("project={project[1]}")
-    info("args={arguments}")
 
     exit(0)
 }

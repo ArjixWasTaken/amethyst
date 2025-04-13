@@ -31,7 +31,7 @@ pub fun cmd_init(arguments: [Text]): Null {
         $ touch "{dest}"/\{amethyst.ini,{dest}} $
 
         // set latest amber version
-        trust file_write("{dest}/amethyst.ini", join([
+        file_write("{dest}/amethyst.ini", join([
             "[amethyst]",
             "amber-version = 0.4.0-alpha",
             "",
@@ -42,7 +42,7 @@ pub fun cmd_init(arguments: [Text]): Null {
             ""
         ], "\n"))
 
-        trust file_write("{dest}/{dest}", join([
+        file_write("{dest}/{dest}", join([
             "#!/bin/env amethyst",
             "",
             "main(args) \{",
@@ -50,7 +50,7 @@ pub fun cmd_init(arguments: [Text]): Null {
             "}"
         ], "\n"))
 
-        trust file_chmod("{dest}/{dest}", "+x")
+        file_chmod("{dest}/{dest}", "+x")
     }
 
     exit(0)
