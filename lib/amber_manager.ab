@@ -73,7 +73,7 @@ pub fun download(version: Text): Null {
     }
 }
 
-pub fun execute_script(version: Text, script: Text): Null {
+pub fun execute_script(version: Text, script: Text, arguments: [Text]): Null {
     if not is_available_locally(version) {
         fatal("Amber version {version} is not available locally.")
     }
@@ -81,5 +81,5 @@ pub fun execute_script(version: Text, script: Text): Null {
     const data_dir = get_amethyst_data_dir()
     const amber = "{data_dir}/amber/amber.{version}.bin"
 
-    trust $ exec {amber} run "{script}" $
+    trust $ exec {amber} run "{script}" {arguments} $
 }

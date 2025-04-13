@@ -38,7 +38,7 @@ main(args) {
         const version = get_project_property(project[1], "amethyst", "amber-version")
 
         if is_available_locally(version) {
-            execute_script(version, arg)
+            execute_script(version, arg, arguments)
             // execute_script uses exec, so really, this *is* unreachable
             // but just in case
             exit(0)
@@ -60,7 +60,7 @@ main(args) {
         download(version)
 
         if is_available_locally(version) {
-            execute_script(version, arg)
+            execute_script(version, arg, arguments)
             // execute_script uses exec, so really, this *is* unreachable
             // but just in case
             exit(0)
