@@ -1,4 +1,4 @@
-import { info, error } from "../lib/utils.ab"
+import { info, fatal } from "../lib/utils.ab"
 
 pub fun cmd_help(arguments: [Text]): Null {
     info("help!")

@@ -2,7 +2,7 @@ import { input_prompt } from "std/env"
 import { dir_exists, file_exists, file_write, file_chmod } from "std/fs"
 import { join } from "std/text"
 
-import { info, error } from "../lib/utils.ab"
+import { info, fatal } from "../lib/utils.ab"
 import { basename, realpath, is_dir_empty } from "../lib/path.ab"
 
 pub fun cmd_init(arguments: [Text]): Null {

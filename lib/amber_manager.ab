@@ -1,8 +1,10 @@
-import { file_exists } from "std/fs"
+import { file_exists, file_extract, file_glob } from "std/fs"
+import { array_contains } from "std/array"
+import { file_download } from "std/http"
 
 import { fatal } from "./utils.ab"
 import { get_github_tags } from "./github.ab"
-import { get_amethyst_data_dir } from "./environment.ab"
+import { get_os, get_arch, get_amethyst_data_dir } from "./environment.ab"
 
 pub fun is_available_locally(version: Text): Bool {
     const data_dir = get_amethyst_data_dir()
@@ -10,25 +12,74 @@ pub fun is_available_locally(version: Text): Bool {
         fatal("Failed to create {data_dir}/amber directory.")
     }
 
-    return file_exists("{data_dir}/amber/{version}.bin")
+    return file_exists("{data_dir}/amber/amber.{version}.bin")
 }
 
 pub fun is_available_remotely(version: Text): Bool {
-    // TODO: implement this
-
     const tags = get_github_tags("amber-lang", "amber")
-    echo tags
-
-    return true
+    return array_contains(tags, version)
 }
 
-pub fun execute_script(amber: Text, script: Text): Null {
-    if not is_available_locally(amber) {
-        fatal("Amber version {amber} is not available locally.")
+pub fun download(version: Text): Null {
+    // TODO: Make this simpler
+
+    const os = get_os()
+    const arch = get_arch()
+
+    const data_dir = get_amethyst_data_dir()
+    const tmp = "{data_dir}/tmp"
+    const dest = "{tmp}/amber.{version}.tar.xz"
+
+    $ mkdir -p "{tmp}" $ failed {
+        fatal("Failed to create {tmp} directory.")
+    }
+
+    const url = "https://github.com/amber-lang/amber/releases/download/{version}/amber-{arch}-{os}.tar.xz"
+
+    trust $ rm {dest} $
+    if not file_download(url, dest) {
+        fatal("Failed to download amber {version} from {url}.")
+    }
+
+    const extract_dir = "{tmp}/amber-{arch}-{os}-{version}"
+    $ mkdir -p "{extract_dir}" $ failed {
+        fatal("Failed to create {extract_dir} directory.")
+    }
+
+    file_extract(dest, extract_dir) failed {
+        fatal("Failed to extract amber {version} from {dest}.")
+    }
+
+    const amber_bin = file_glob("{extract_dir}/**/amber") failed {
+        fatal("Failed to find amber binary in {extract_dir}.")
+    }
+
+    if len(amber_bin) == 0 {
+        fatal("Failed to find amber binary in {extract_dir}.")
+    }
+
+    const amber = amber_bin[0]
+    const amber_dest = "{data_dir}/amber/amber.{version}.bin"
+    $ mkdir -p "{data_dir}/amber" $ failed {
+        fatal("Failed to create {data_dir}/amber directory.")
+    }
+
+    $ mv {amber} {amber_dest} $ failed {
+        fatal("Failed to move amber binary to {amber_dest}.")
+    }
+
+    $ rm -rf {tmp} $ failed {
+        fatal("Failed to remove {tmp} directory.")
+    }
+}
+
+pub fun execute_script(version: Text, script: Text): Null {
+    if not is_available_locally(version) {
+        fatal("Amber version {version} is not available locally.")
     }
 
     const data_dir = get_amethyst_data_dir()
-    const amber = "{data_dir}/amber/{amber}.bin"
+    const amber = "{data_dir}/amber/amber.{version}.bin"
 
     trust $ exec {amber} run "{script}" $
 }

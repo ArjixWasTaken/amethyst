@@ -2,12 +2,12 @@
 
 import { array_shift } from "std/array"
 import { file_exists } from "std/fs"
-import { is_command } from "std/env"
+import { is_command, input_confirm } from "std/env"
 import { join } from "std/text"
 
-import { fatal } from "./lib/utils.ab"
+import { info, warn, fatal } from "./lib/utils.ab"
 import { locate_project, get_project_property } from "./lib/project.ab"
-import { is_available_locally, execute_script } from "./lib/amber_manager.ab"
+import { is_available_locally, is_available_remotely, download, execute_script } from "./lib/amber_manager.ab"
 
 import { cmd_help } from "./commands/help.ab"
 import { cmd_init } from "./commands/init.ab"
@@ -44,7 +44,27 @@ main(args) {
             exit(0)
         }
 
-        fatal("Amber version {version} is not available locally.")
+        warn("Amber {version} is not available locally.")
+        info("Checking if it is available for download...")
+
+        if not is_available_remotely(version) {
+            fatal("Couldn't satisfy version requirement for amber {version}")
+        }
+
+        info("Amber {version} is available for download.")
+        if not input_confirm("Proceed with download?") {
+            fatal("Can't execute {arg}.")
+        }
+
+        info("Downloading amber {version}...")
+        download(version)
+
+        if is_available_locally(version) {
+            execute_script(version, arg)
+            // execute_script uses exec, so really, this *is* unreachable
+            // but just in case
+            exit(0)
+        }
     }
 
     if {
