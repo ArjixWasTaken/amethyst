@@ -6,6 +6,8 @@ import { info, fatal } from "../lib/utils.ab"
 import { basename, realpath, is_dir_empty } from "../lib/path.ab"
 
 pub fun cmd_init(arguments: [Text]): Null {
+    // TODO: Accept arguments for project name to skip prompt
+
     let dest = input_prompt("Project directory: ")
     loop {
         if {
