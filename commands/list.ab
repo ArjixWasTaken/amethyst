@@ -5,7 +5,7 @@ import { get_github_tags } from "../lib/github.ab"
 import { get_local_versions } from "../lib/amber_manager.ab"
 
 fun show_help_and_exit() {
-    echo "Usage: amethyst list [--remote] [--help]"
+    echo "Usage: amethyst list [--all] [--help]"
     echo "Options:"
     echo "  --all     List all available amber versions"
     echo "  --help    Show this help message and exit"
@@ -38,6 +38,7 @@ pub fun cmd_list(arguments: [Text]): Null {
         return null
     }
 
+    info("Listing all amber versions:")
     const tags = get_github_tags("amber-lang", "amber")
     for tag in tags {
         const is_local = array_contains(local_versions, tag)
