@@ -10,9 +10,7 @@ import { basename } from "./path.ab"
 
 pub fun get_local_versions(): [Text] {
     const data_dir = get_amethyst_data_dir()
-    let amber_bins = file_glob("{data_dir}/amber/amber.*.bin") failed {
-        fatal("Failed to find amber binaries in {data_dir}/amber.")
-    }
+    let amber_bins = trust file_glob("{data_dir}/amber/amber.*.bin")
 
     let idx = 0
     loop {
