@@ -9,7 +9,6 @@ import { info, warn, fatal } from "./lib/utils.ab"
 import { locate_project, get_project_property } from "./lib/project.ab"
 import { is_available_locally, is_available_remotely, download, execute_script } from "./lib/amber_manager.ab"
 
-import { cmd_help } from "./commands/help.ab"
 import { cmd_info } from "./commands/info.ab"
 import { cmd_init } from "./commands/init.ab"
 import { cmd_amber } from "./commands/amber/_mod.ab"
@@ -26,6 +25,19 @@ for dep in deps {
 
 if len(missing) > 0 {
     fatal("Missing dependencies: {join(missing, ",")}")
+}
+
+fun show_help_and_exit() {
+    echo "Usage: amethyst <command> [options]"
+    echo ""
+    echo "Commands:"
+    echo "  init       Bootstrap a new amber project"
+    echo "  info       Display information about the current amber project"
+    echo "  amber      Manage amber versions"
+    echo ""
+    echo "Options:"
+    echo "  --help, -h    Show this help message and exit"
+    exit(0)
 }
 
 main(args) {
@@ -71,9 +83,9 @@ main(args) {
     if {
         // TODO: `help` doesn't work if amber is directly executing this file
         // Maybe we should report this to the amber team?
-        arg == "help":  cmd_help(arguments)
-        arg == "amber": cmd_amber(arguments)
-        arg == "init":  cmd_init(arguments)
-        arg == "info":  cmd_info(arguments)
+        arg == "--help":  show_help_and_exit()
+        arg == "amber":   cmd_amber(arguments)
+        arg == "init":    cmd_init(arguments)
+        arg == "info":    cmd_info(arguments)
     }
 }
