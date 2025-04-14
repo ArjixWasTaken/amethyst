@@ -1,0 +1,34 @@
+import { array_shift } from "std/array"
+
+import { cmd_amber_list } from "./list.ab"
+import { cmd_amber_install } from "./install.ab"
+import { info, fatal } from "../../lib/utils.ab"
+
+fun show_help_and_exit() {
+    echo "Usage: amethyst amber <command> [options]"
+    echo ""
+    echo "Commands:"
+    echo "  list          List available amber versions"
+    echo "  install       Install a specific amber version"
+    echo "  uninstall     Remove a specific amber version"
+    echo ""
+    echo "Options:"
+    echo "  --help, -h    Show this help message and exit"
+    exit(0)
+}
+
+pub fun cmd_amber(arguments: [Text]): Null {
+    loop {
+        if len(arguments) == 0 {
+            break
+        }
+
+        const arg = array_shift(arguments)
+        if {
+            arg == "list":   cmd_amber_list(arguments)
+            arg == "install":   cmd_amber_install(arguments)
+            arg == "--help" or arg == "-h": show_help_and_exit()
+            else: fatal("Unknown argument: " + arg)
+        }
+    }
+}

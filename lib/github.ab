@@ -1,12 +1,30 @@
-import { split_lines } from "std/text"
+import { match_regex, split_lines } from "std/text"
 
 import { fatal } from "./utils.ab"
 
-pub fun get_github_tags(user: Text, repo: Text): [Text] {
-    const json = trust $ curl -s -f "https://api.github.com/repos/{user}/{repo}/tags" $ failed {
+pub fun get_amber_tags(): [Text] {
+    const json = trust $ curl -s -f "https://api.github.com/repos/amber-lang/amber/tags" $ failed {
         fatal("Failed to fetch tags from GitHub API.")
     }
 
     const tags = trust $ echo "{json}" | jq '.[] | .name' -r $
-    return split_lines(tags)
+    const split = split_lines(tags)
+
+    let filtered = [Text]
+
+    for tag in split {
+        // filter out early versions
+        if {
+            // match ['0.3.2', '0.3.3', '0.3.4', '0.3.5']
+            match_regex(tag, "^0\\.3\\.[2-5]\{1}", true): filtered += [tag]
+
+            // match versions that do not start with `0.`
+            match_regex(tag, "^[1-9]+", true): filtered += [tag]
+            
+            // match versions that start with `0.` but have a minor version equal to or greater than `4`
+            match_regex(tag, "^0\\.[4-9]+", true): filtered += [tag]
+        }
+    }
+
+    return filtered
 }

@@ -4,7 +4,7 @@ import { file_download } from "std/http"
 import { slice } from "std/text"
 
 import { fatal } from "./utils.ab"
-import { get_github_tags } from "./github.ab"
+import { get_amber_tags } from "./github.ab"
 import { get_os, get_arch, get_amethyst_data_dir } from "./environment.ab"
 import { basename } from "./path.ab"
 
@@ -44,7 +44,7 @@ pub fun is_available_locally(version: Text): Bool {
 }
 
 pub fun is_available_remotely(version: Text): Bool {
-    const tags = get_github_tags("amber-lang", "amber")
+    const tags = get_amber_tags()
     return array_contains(tags, version)
 }
 
@@ -64,8 +64,8 @@ pub fun download(version: Text): Null {
 
     const url = "https://github.com/amber-lang/amber/releases/download/{version}/amber-{arch}-{os}.tar.xz"
 
-    trust $ rm {dest} $
-    if not file_download(url, dest) {
+    trust $ rm -f {dest} $
+    if not silent file_download(url, dest) {
         fatal("Failed to download amber {version} from {url}.")
     }
 
