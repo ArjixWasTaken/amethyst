@@ -2,6 +2,7 @@ import { array_shift } from "std/array"
 
 import { cmd_amber_list } from "./list.ab"
 import { cmd_amber_install } from "./install.ab"
+import { cmd_amber_uninstall } from "./uninstall.ab"
 import { info, fatal } from "../../lib/utils.ab"
 
 fun show_help_and_exit() {
@@ -27,6 +28,7 @@ pub fun cmd_amber(arguments: [Text]): Null {
         if {
             arg == "list":   cmd_amber_list(arguments)
             arg == "install":   cmd_amber_install(arguments)
+            arg == "uninstall":   cmd_amber_uninstall(arguments)
             arg == "--help" or arg == "-h": show_help_and_exit()
             else: fatal("Unknown argument: " + arg)
         }

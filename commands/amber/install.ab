@@ -55,7 +55,7 @@ pub fun cmd_amber_install(arguments: [Text]): Null {
         for tag in tags {
             available_versions += "- {tag}\n"
         }
-        fatal("Couldn't satisfy version {version}, available versions are:\n{available_versions}")
+        fatal("Couldn't find version {version}, available versions are:\n{available_versions}")
     }
 
     const is_installed = is_available_locally(version)

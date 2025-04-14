@@ -1,0 +1,55 @@
+import { array_shift, array_contains } from "std/array"
+import { join } from "std/text"
+
+import { info, warn, fatal } from "../../lib/utils.ab"
+import { get_amber_tags } from "../../lib/github.ab"
+import { get_local_versions, is_available_locally, download, delete_download } from "../../lib/amber_manager.ab"
+
+fun show_help_and_exit(code: Num = 0): Null {
+    echo "Usage: amethyst amber uninstall <version> [options]"
+    echo ""
+    echo "Arguments:"
+    echo "  <version>     The version of amber to uninstall"
+    echo ""
+    echo "Options:"
+    echo "  --help,  -h    Show this help message and exit"
+    exit(code)
+}
+
+pub fun cmd_amber_uninstall(arguments: [Text]): Null {
+    let version = ""
+
+    loop {
+        if len(arguments) == 0 {
+            break
+        }
+
+        const arg = array_shift(arguments)
+        if {
+            arg == "--help" or arg == "-h": show_help_and_exit()
+            else: version = arg
+        }
+    }
+
+    if version == "" {
+        fatal("No version specified.")
+    }
+
+    const tags = get_amber_tags()
+    const local_versions = get_local_versions()
+
+    if not array_contains(tags, version) {
+        let available_versions = ""
+        for tag in local_versions {
+            available_versions += "- {tag}\n"
+        }
+        fatal("Couldn't find version {version}, available versions are:\n{available_versions}")
+    }
+
+    info("Uninstalling amber version {version}...")
+    delete_download(version)
+
+    info("Successfully uninstlled Amber {version}!")
+
+    exit(0)
+}

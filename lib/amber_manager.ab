@@ -101,6 +101,19 @@ pub fun download(version: Text): Null {
     }
 }
 
+pub fun delete_download(version: Text): Null {
+    const data_dir = get_amethyst_data_dir()
+    const amber_dest = "{data_dir}/amber/amber.{version}.bin"
+
+    if not file_exists(amber_dest) {
+        fatal("Amber version {version} is not installed.")
+    }
+
+    $ rm -f "{amber_dest}" $ failed {
+        fatal("Failed to remove amber binary at {amber_dest}.")
+    }
+}
+
 pub fun execute_script(version: Text, script: Text, arguments: [Text]): Null {
     if not is_available_locally(version) {
         fatal("Amber version {version} is not available locally.")
