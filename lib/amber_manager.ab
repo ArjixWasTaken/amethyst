@@ -122,5 +122,5 @@ pub fun execute_script(version: Text, script: Text, arguments: [Text]): Null {
     const data_dir = get_amethyst_data_dir()
     const amber = "{data_dir}/amber/amber.{version}.bin"
 
-    trust $ exec {amber} run "{script}" {arguments} $
+    trust $ exec "{amber}" run "{script}" "{arguments}" $
 }
