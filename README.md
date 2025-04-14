@@ -2,7 +2,7 @@
 
 A version manager, and project manager for [Amber](https://amber-lang.com), written in 100% Amber.
 
-[![asciicast](https://asciinema.org/a/E4ewppCGMixzWto8rzwoUtFQd.svg)](https://asciinema.org/a/E4ewppCGMixzWto8rzwoUtFQd)
+[![asciicast](https://asciinema.org/a/nmUSrF9jkXMcAqqmGKFA7wmhs.svg)](https://asciinema.org/a/nmUSrF9jkXMcAqqmGKFA7wmhs)
 
 
 ## 🚧 Under Construction 🚧
