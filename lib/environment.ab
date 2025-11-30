@@ -18,8 +18,8 @@ pub fun get_os(): Text {
     const is_musl = not has_failed("ls -l /lib | grep libc.musl")
 
     return is_musl
-        then "unknown-linux-musl"
-        else "unknown-linux-gnu"
+        then "linux-musl"
+        else "linux-gnu"
 }
 
 pub fun get_arch(): Text {
