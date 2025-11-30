@@ -27,7 +27,7 @@ pub fun cmd_amber_install(arguments: [Text]): Null {
             break
         }
 
-        const arg = array_shift(arguments)
+        const arg = trust array_shift(arguments)
         if {
             arg == "--force" or arg == "-f": force = true
             arg == "--help" or arg == "-h": show_help_and_exit()

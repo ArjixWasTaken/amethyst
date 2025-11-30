@@ -63,7 +63,7 @@ pub fun download(version: Text): Null {
     const url = "https://github.com/amber-lang/amber/releases/download/{version}/amber-{arch}-{os}.tar.xz"
 
     trust $ rm -f {dest} $
-    if not silent file_download(url, dest) {
+    silent file_download(url, dest) failed {
         fatal("Failed to download amber {version} from {url}.")
     }
 

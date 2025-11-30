@@ -1,6 +1,6 @@
 // Stolen from https://github.com/amber-lang/amber/blob/30ffefb823e94b903b82a0f01f14475ea4e297fe/setup/shared.ab
 
-import { has_failed, env_const_get } from "std/env"
+import { has_failed, env_var_get } from "std/env"
 import { array_contains } from "std/array"
 
 import { info, fatal } from "./utils.ab"
@@ -34,7 +34,7 @@ pub fun get_arch(): Text {
 }
 
 pub fun get_amethyst_data_dir(): Text {
-    const home = trust env_const_get("HOME")
+    const home = trust env_var_get("HOME")
     const path = "{home}/.local/share/amethyst"
 
     $ mkdir -p "{path}" $ failed {

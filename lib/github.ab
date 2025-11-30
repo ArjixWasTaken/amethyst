@@ -3,7 +3,7 @@ import { match_regex, split_lines } from "std/text"
 import { fatal } from "./utils.ab"
 
 pub fun get_amber_tags(): [Text] {
-    const json = trust $ curl -s -f "https://api.github.com/repos/amber-lang/amber/tags" $ failed {
+    const json = $ curl -s -f "https://api.github.com/repos/amber-lang/amber/tags" $ failed {
         fatal("Failed to fetch tags from GitHub API.")
     }
 
