@@ -3,7 +3,7 @@ import { array_contains } from "std/array"
 import { file_download } from "std/http"
 import { slice } from "std/text"
 
-import { fatal } from "./utils.ab"
+import { info, fatal } from "./utils.ab"
 import { get_amber_tags } from "./github.ab"
 import { get_os, get_arch, get_amethyst_data_dir } from "./environment.ab"
 import { basename } from "./path.ab"
@@ -60,11 +60,29 @@ pub fun download(version: Text): Null {
         fatal("Failed to create {tmp} directory.")
     }
 
-    const url = "https://github.com/amber-lang/amber/releases/download/{version}/amber-{arch}-{os}.tar.xz"
+    const urls = [
+        "https://github.com/amber-lang/amber/releases/download/{version}/amber-{os}-{arch}.tar.xz",
+        "https://github.com/amber-lang/amber/releases/download/{version}/amber-{arch}-unknown-{os}.tar.xz",
+        "https://github.com/amber-lang/amber/releases/download/{version}/amber-{arch}-{os}.tar.xz"
+    ]
 
     trust $ rm -f {dest} $
-    if not silent file_download(url, dest) {
-        fatal("Failed to download amber {version} from {url}.")
+
+    let downloaded = false
+    for url in urls {
+        const http_status = trust $ curl --write-out %\{http_code} -s --output /dev/null --head {url} $
+        if http_status == "404" {
+            continue
+        }
+
+        if silent file_download(url, dest) {
+            downloaded = true
+            break
+        }
+    }
+
+    if not downloaded {
+        fatal("Failed to download amber {version} from {urls}.")
     }
 
     const extract_dir = "{tmp}/amber-{arch}-{os}-{version}"
@@ -76,8 +94,12 @@ pub fun download(version: Text): Null {
         fatal("Failed to extract amber {version} from {dest}.")
     }
 
-    const amber_bin = file_glob("{extract_dir}/**/amber") failed {
-        fatal("Failed to find amber binary in {extract_dir}.")
+    let amber_bin = [Text]
+    for path in ["{extract_dir}/amber-{arch}-unknown-{os}/amber", "{extract_dir}/amber-{arch}-{os}/amber", "{extract_dir}/amber"] {
+        if file_exists(path) {
+            amber_bin = [path]
+            break
+        }
     }
 
     if len(amber_bin) == 0 {
