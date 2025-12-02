@@ -32,7 +32,7 @@ pub fun cmd_amber_uninstall(arguments: [Text]): Null {
     }
 
     if version == "" {
-        fatal("No version specified.")
+        show_help_and_exit(1)
     }
 
     const tags = get_amber_tags()
