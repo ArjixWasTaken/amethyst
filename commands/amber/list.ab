@@ -21,7 +21,7 @@ pub fun cmd_amber_list(arguments: [Text]): Null {
             break
         }
 
-        const arg = array_shift(arguments)
+        const arg = trust array_shift(arguments)
         if {
             arg == "--all" or arg == "-a": show_remote = true
             arg == "--help" or arg == "-h": show_help_and_exit()

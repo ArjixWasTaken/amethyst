@@ -75,7 +75,7 @@ pub fun download(version: Text): Null {
             continue
         }
 
-        if silent file_download(url, dest) {
+        silent file_download(url, dest) succeeded {
             downloaded = true
             break
         }

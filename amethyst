@@ -42,9 +42,9 @@ fun show_help_and_exit() {
 
 main(args) {
     let arguments = args
-    array_shift(arguments)
+    trust array_shift(arguments)
 
-    let arg = array_shift(arguments)
+    let arg = trust array_shift(arguments)
 
     const project = locate_project()
     if file_exists(arg) and project[0] == "yes" {

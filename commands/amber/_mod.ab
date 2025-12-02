@@ -24,7 +24,7 @@ pub fun cmd_amber(arguments: [Text]): Null {
             break
         }
 
-        const arg = array_shift(arguments)
+        const arg = trust array_shift(arguments)
         if {
             arg == "list":   cmd_amber_list(arguments)
             arg == "install":   cmd_amber_install(arguments)
