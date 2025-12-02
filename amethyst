@@ -10,6 +10,7 @@ import { locate_project, get_project_property } from "./lib/project.ab"
 import { is_available_locally, is_available_remotely, download, execute_script } from "./lib/amber_manager.ab"
 
 import { cmd_info } from "./commands/info.ab"
+import { cmd_env } from "./commands/env.ab"
 import { cmd_init } from "./commands/init.ab"
 import { cmd_amber } from "./commands/amber/_mod.ab"
 
@@ -27,17 +28,18 @@ if len(missing) > 0 {
     fatal("Missing dependencies: {join(missing, ",")}")
 }
 
-fun show_help_and_exit() {
+fun show_help_and_exit(code: Num = 0) {
     echo "Usage: amethyst <command> [options]"
     echo ""
     echo "Commands:"
     echo "  init       Bootstrap a new amber project"
     echo "  info       Display information about the current amber project"
+    echo "  env        Generate bash env"
     echo "  amber      Manage amber versions"
     echo ""
     echo "Options:"
     echo "  --help, -h    Show this help message and exit"
-    exit(0)
+    exit(code)
 }
 
 main(args) {
@@ -87,5 +89,7 @@ main(args) {
         arg == "amber":   cmd_amber(arguments)
         arg == "init":    cmd_init(arguments)
         arg == "info":    cmd_info(arguments)
+        arg == "env":     cmd_env(arguments)
+        else: show_help_and_exit(1)
     }
 }

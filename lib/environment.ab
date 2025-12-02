@@ -43,3 +43,14 @@ pub fun get_amethyst_data_dir(): Text {
 
     return realpath(path)
 }
+
+pub fun get_amethyst_bin_dir(): Text {
+    const home = trust env_var_get("HOME")
+    const path = "{home}/.local/bin/amethyst"
+
+    $ mkdir -p "{path}" $ failed {
+        fatal("Failed to create {path} directory.")
+    }
+
+    return realpath(path)
+}
