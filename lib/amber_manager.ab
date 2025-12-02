@@ -75,12 +75,7 @@ pub fun download(version: Text): Null {
             continue
         }
 
-        let failed = false
-        silent file_download(url, dest) failed {
-            failed = true
-        }
-
-        if not failed {
+        silent file_download(url, dest) succeeded {
             downloaded = true
             break
         }
