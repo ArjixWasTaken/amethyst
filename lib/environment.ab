@@ -26,7 +26,7 @@ pub fun get_arch(): Text {
     // Determine architecture
     const arch_type = trust $ uname -m $
 
-    let arch = array_contains(["arm64", "aarch64"], arch_type)
+    const arch = array_contains(["arm64", "aarch64"], arch_type)
         then "aarch64"
         else "x86_64"
 

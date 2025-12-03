@@ -3,9 +3,12 @@ import { starts_with, ends_with, split, split_lines, join, trim, replace } from 
 import { array_pop } from "std/array"
 
 import { parent_dir } from "./path.ab"
+import { info, warn, fatal } from "./utils.ab"
+import { is_available_locally, download } from "./amber_manager.ab"
 
 pub fun locate_project(): [Text] {
     let cwd = trust $ pwd $
+
     loop {
         if not dir_exists(cwd) {
             return ["no", ""]
@@ -19,7 +22,8 @@ pub fun locate_project(): [Text] {
             break
         }
 
-        cwd = parent_dir(cwd)
+        const new_cwd = parent_dir(cwd)
+        cwd = new_cwd
     }
 
     return ["no", ""]
@@ -35,7 +39,7 @@ pub fun get_project_property(project: Text, section: Text, property: Text): Text
     let current_section = ""
 
     for line in split_lines(lines) {
-        let line = trim(line)
+        const line = trim(line)
 
         if starts_with(line, "#") or line == "" {
             continue
@@ -64,4 +68,28 @@ pub fun get_project_property(project: Text, section: Text, property: Text): Text
     }
 
     return ""
+}
+
+pub fun get_project_amber() {
+    const project = locate_project()
+    const version = get_project_property(project[1], "amethyst", "amber-version")
+
+    if not is_available_locally(version) {
+        warn("Amber {version} is not available locally.")
+        info("Checking if it is available for download...")
+
+        if not is_available_remotely(version) {
+            fatal("Couldn't satisfy version requirement for amber {version}")
+        }
+
+        info("Amber {version} is available for download.")
+        if not input_confirm("Proceed with download?") {
+            exit(1)
+        }
+
+        info("Downloading amber {version}...")
+        download(version)
+    }
+
+    return version
 }

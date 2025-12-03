@@ -36,7 +36,7 @@ pub fun cmd_amber_list(arguments: [Text]): Null {
             echo "- {version}"
         }
 
-        return null
+        exit(0)
     }
 
     info("Listing all amber versions:")

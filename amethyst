@@ -1,21 +1,20 @@
-#!/bin/env amber
-
 import { array_shift } from "std/array"
 import { file_exists } from "std/fs"
 import { is_command, input_confirm } from "std/env"
 import { join } from "std/text"
 
 import { info, warn, fatal } from "./lib/utils.ab"
-import { locate_project, get_project_property } from "./lib/project.ab"
+import { locate_project, get_project_property, get_project_amber } from "./lib/project.ab"
 import { is_available_locally, is_available_remotely, download, execute_script } from "./lib/amber_manager.ab"
 
 import { cmd_info } from "./commands/info.ab"
 import { cmd_env } from "./commands/env.ab"
+import { cmd_build } from "./commands/build.ab"
 import { cmd_init } from "./commands/init.ab"
 import { cmd_amber } from "./commands/amber/_mod.ab"
 
 // TODO: Remove any unnecessary dependencies
-const deps = ["uname", "curl", "jq", "python"]
+const deps = ["uname", "cat", "curl", "jq", "python"]
 let missing = [Text]
 
 for dep in deps {
@@ -34,6 +33,7 @@ fun show_help_and_exit(code: Num = 0) {
     echo "Commands:"
     echo "  init       Bootstrap a new amber project"
     echo "  info       Display information about the current amber project"
+    echo "  build      Build current project"
     echo "  env        Generate bash env"
     echo "  amber      Manage amber versions"
     echo ""
@@ -46,33 +46,11 @@ main(args) {
     let arguments = args
     trust array_shift(arguments)
 
-    let arg = trust array_shift(arguments)
+    const arg = trust array_shift(arguments)
 
     const project = locate_project()
     if file_exists(arg) and project[0] == "yes" {
-        const version = get_project_property(project[1], "amethyst", "amber-version")
-
-        if is_available_locally(version) {
-            execute_script(version, arg, arguments)
-            // execute_script uses exec, so really, this *is* unreachable
-            // but just in case
-            exit(0)
-        }
-
-        warn("Amber {version} is not available locally.")
-        info("Checking if it is available for download...")
-
-        if not is_available_remotely(version) {
-            fatal("Couldn't satisfy version requirement for amber {version}")
-        }
-
-        info("Amber {version} is available for download.")
-        if not input_confirm("Proceed with download?") {
-            fatal("Can't execute {arg}.")
-        }
-
-        info("Downloading amber {version}...")
-        download(version)
+        const version = get_project_amber()
 
         if is_available_locally(version) {
             execute_script(version, arg, arguments)
@@ -90,6 +68,7 @@ main(args) {
         arg == "init":    cmd_init(arguments)
         arg == "info":    cmd_info(arguments)
         arg == "env":     cmd_env(arguments)
+        arg == "build":   cmd_build(arguments)
         else: show_help_and_exit(1)
     }
 }

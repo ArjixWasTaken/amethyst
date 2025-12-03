@@ -1,0 +1,36 @@
+import { file_exists } from "std/fs"
+import { info, fatal } from "../lib/utils.ab"
+import { locate_project, get_project_property, get_project_amber } from "../lib/project.ab"
+import { get_amethyst_data_dir } from "../lib/environment.ab"
+import { relative } from "../lib/path.ab"
+
+pub fun cmd_build(arguments: [Text]): Null {
+    const project = locate_project()
+    if project[0] == "no" {
+        fatal("Failed to locate an 'amethyst.ini' file, make sure you are in a project's (sub)directory.")
+    }
+
+    const project = project[1]
+    const name = get_project_property(project, "project", "name")
+
+    let entry = get_project_property(project, "project", "entry")
+    if entry == "" {
+        fatal("This project doesn't have a configured entry point, please specify one in your amethyst.ini")
+    }
+
+    entry = relative("{project}/{entry}")
+    if not file_exists(entry) {
+        fatal("{entry} does not exist")
+    }
+
+    const target = "{project}/target"
+    trust $ rm -rf "{target}" && mkdir -p "{target}" $
+
+    const data_dir = get_amethyst_data_dir()
+    const version = get_project_amber()
+
+    const amber = "{data_dir}/amber/amber.{version}.bin"
+    trust $ exec "{amber}" build "{entry}" "{target}/{name}.sh" $
+
+    exit(0)
+}

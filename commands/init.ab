@@ -19,7 +19,7 @@ pub fun cmd_init(arguments: [Text]): Null {
         dest = input_prompt("Project directory: ")
     }
 
-    let project = basename(realpath(dest))
+    const project = basename(realpath(dest))
     if dest != "." {
         dest = project
         trust $ mkdir "{dest}" $
@@ -28,7 +28,11 @@ pub fun cmd_init(arguments: [Text]): Null {
     // Create project structure
     trust {
         $ mkdir -p "{dest}"/\{lib,} $
-        $ touch "{dest}"/\{amethyst.ini,{dest}} $
+        $ touch "{dest}"/\{amethyst.ini,{dest},.gitignore} $
+
+        file_write("{dest}/.gitignore", join([
+            "target/"
+        ]))
 
         // set latest amber version
         file_write("{dest}/amethyst.ini", join([
@@ -39,6 +43,7 @@ pub fun cmd_init(arguments: [Text]): Null {
             "[project]",
             "name = {project}",
             "version = 0.1.0",
+            "entry = {project}",
             ""
         ], "\n"))
 
