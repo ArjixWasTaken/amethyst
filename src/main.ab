@@ -14,7 +14,7 @@ import { cmd_init } from "./commands/init.ab"
 import { cmd_amber } from "./commands/amber/_mod.ab"
 
 // TODO: Remove any unnecessary dependencies
-const deps = ["uname", "cat", "curl", "jq", "python"]
+const deps = ["uname", "curl", "jq", "python"]
 let missing = [Text]
 
 for dep in deps {

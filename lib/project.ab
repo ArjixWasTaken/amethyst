@@ -1,4 +1,4 @@
-import { dir_exists, file_exists } from "std/fs"
+import { dir_exists, file_exists, file_read } from "std/fs"
 import { starts_with, ends_with, split, split_lines, join, trim, replace } from "std/text"
 import { array_pop } from "std/array"
 
@@ -35,7 +35,7 @@ pub fun get_project_property(project: Text, section: Text, property: Text): Text
         return ""
     }
 
-    const lines = trust $ cat "{project_file}" $
+    const lines = trust file_read(project_file)
     let current_section = ""
 
     for line in split_lines(lines) {
