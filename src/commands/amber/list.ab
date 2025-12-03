@@ -1,8 +1,8 @@
 import { array_shift, array_contains } from "std/array"
 
-import { info, fatal } from "../../lib/utils.ab"
-import { get_amber_tags } from "../../lib/github.ab"
-import { get_local_versions } from "../../lib/amber_manager.ab"
+import { info, fatal } from "../../../lib/utils.ab"
+import { get_amber_tags } from "../../../lib/github.ab"
+import { get_local_versions } from "../../../lib/amber_manager.ab"
 
 fun show_help_and_exit() {
     echo "Usage: amethyst amber list [options]"

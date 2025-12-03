@@ -1,8 +1,8 @@
 import { file_exists } from "std/fs"
-import { info, fatal } from "../lib/utils.ab"
-import { locate_project, get_project_property, get_project_amber } from "../lib/project.ab"
-import { get_amethyst_data_dir } from "../lib/environment.ab"
-import { relative } from "../lib/path.ab"
+import { info, fatal } from "../../lib/utils.ab"
+import { locate_project, get_project_property, get_project_amber } from "../../lib/project.ab"
+import { get_amethyst_data_dir } from "../../lib/environment.ab"
+import { relative } from "../../lib/path.ab"
 
 pub fun cmd_build(arguments: [Text]): Null {
     const project = locate_project()

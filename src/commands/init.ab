@@ -2,8 +2,8 @@ import { input_prompt } from "std/env"
 import { dir_exists, file_exists, file_write, file_chmod } from "std/fs"
 import { join } from "std/text"
 
-import { info, fatal } from "../lib/utils.ab"
-import { basename, realpath, is_dir_empty } from "../lib/path.ab"
+import { info, fatal } from "../../lib/utils.ab"
+import { basename, realpath, is_dir_empty } from "../../lib/path.ab"
 
 pub fun cmd_init(arguments: [Text]): Null {
     // TODO: Accept arguments for project name to skip prompt
@@ -30,9 +30,7 @@ pub fun cmd_init(arguments: [Text]): Null {
         $ mkdir -p "{dest}"/\{lib,} $
         $ touch "{dest}"/\{amethyst.ini,{dest}.ab,.gitignore} $
 
-        file_write("{dest}/.gitignore", join([
-            "target/"
-        ]))
+        file_write("{dest}/.gitignore", "target/\n")
 
         // set latest amber version
         file_write("{dest}/amethyst.ini", join([

@@ -1,5 +1,5 @@
-import { info, fatal } from "../lib/utils.ab"
-import { locate_project } from "../lib/project.ab"
+import { info, fatal } from "../../lib/utils.ab"
+import { locate_project } from "../../lib/project.ab"
 
 pub fun cmd_info(arguments: [Text]): Null {
     const project = locate_project()

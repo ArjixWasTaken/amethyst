@@ -3,9 +3,9 @@ import { file_exists } from "std/fs"
 import { is_command, input_confirm } from "std/env"
 import { join } from "std/text"
 
-import { info, warn, fatal } from "./lib/utils.ab"
-import { locate_project, get_project_property, get_project_amber } from "./lib/project.ab"
-import { is_available_locally, is_available_remotely, download, execute_script } from "./lib/amber_manager.ab"
+import { info, warn, fatal } from "../lib/utils.ab"
+import { locate_project, get_project_property, get_project_amber } from "../lib/project.ab"
+import { is_available_locally, is_available_remotely, download, execute_script } from "../lib/amber_manager.ab"
 
 import { cmd_info } from "./commands/info.ab"
 import { cmd_env } from "./commands/env.ab"

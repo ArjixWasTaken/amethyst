@@ -4,7 +4,7 @@ import { cmd_amber_list } from "./list.ab"
 import { cmd_amber_use } from "./use.ab"
 import { cmd_amber_install } from "./install.ab"
 import { cmd_amber_uninstall } from "./uninstall.ab"
-import { info, fatal } from "../../lib/utils.ab"
+import { info, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit(code: Num = 0) {
     echo "Usage: amethyst amber <command> [options]"

@@ -1,9 +1,9 @@
 import { array_shift, array_contains } from "std/array"
 import { join } from "std/text"
 
-import { info, warn, fatal } from "../../lib/utils.ab"
-import { get_amber_tags } from "../../lib/github.ab"
-import { get_local_versions, is_available_locally, download, delete_download } from "../../lib/amber_manager.ab"
+import { info, warn, fatal } from "../../../lib/utils.ab"
+import { get_amber_tags } from "../../../lib/github.ab"
+import { get_local_versions, is_available_locally, download, delete_download } from "../../../lib/amber_manager.ab"
 
 fun show_help_and_exit(code: Num = 0): Null {
     echo "Usage: amethyst amber uninstall <version> [options]"
