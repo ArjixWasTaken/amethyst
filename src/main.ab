@@ -12,6 +12,9 @@ import { cmd_env } from "./commands/env.ab"
 import { cmd_build } from "./commands/build.ab"
 import { cmd_init } from "./commands/init.ab"
 import { cmd_amber } from "./commands/amber/_mod.ab"
+import { cmd_deps_add } from "./commands/deps/add.ab"
+import { cmd_deps_remove } from "./commands/deps/remove.ab"
+import { cmd_deps_install } from "./commands/deps/install.ab"
 
 // TODO: Remove any unnecessary dependencies
 const deps = ["uname", "curl", "jq", "python"]
@@ -33,9 +36,13 @@ fun show_help_and_exit(code: Num = 0) {
     echo "Commands:"
     echo "  init       Bootstrap a new amber project"
     echo "  info       Display information about the current amber project"
+    echo "  add        Add a dependency to amethyst.ini"
+    echo "  remove     Remove a dependency from amethyst.ini"
+    echo "  install    Install the dependencies defined in amethyst.ini"
     echo "  build      Build current project"
     echo "  env        Generate bash env"
     echo "  amber      Manage amber versions"
+    echo "  deps       Manage dependencies"
     echo ""
     echo "Options:"
     echo "  --help, -h    Show this help message and exit"
@@ -65,6 +72,10 @@ main(args) {
         // Maybe we should report this to the amber team?
         arg == "--help":  show_help_and_exit()
         arg == "amber":   cmd_amber(arguments)
+        arg == "add":     cmd_deps_add(arguments)
+        arg == "remove":  cmd_deps_remove(arguments)
+        arg == "install": cmd_deps_install(arguments)
+        
         arg == "init":    cmd_init(arguments)
         arg == "info":    cmd_info(arguments)
         arg == "env":     cmd_env(arguments)

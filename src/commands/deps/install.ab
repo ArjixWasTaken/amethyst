@@ -1,0 +1,16 @@
+import { array_shift, array_contains } from "std/array"
+
+import { info, fatal } from "../../../lib/utils.ab"
+
+fun show_help_and_exit() {
+    echo "Usage: amethyst install"
+    echo ""
+    echo "Options:"
+    echo "  --help, -h    Show this help message and exit"
+    exit(0)
+}
+
+pub fun cmd_deps_install(arguments: [Text]): Null {
+    fatal("stub for `amethyst install`")
+    exit(0)
+}

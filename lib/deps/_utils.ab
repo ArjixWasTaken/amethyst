@@ -1,0 +1,18 @@
+import { info, fatal } from "../utils.ab"
+import { get_project_property, get_project_properties } from "../project.ab"
+
+pub fun list_deps() {
+    const project = locate_project()
+    if project[0] != "yes" {
+        fatal("Cannot list deps outside of project.")
+    }
+
+    const project = project[1]
+    const dependencies = get_project_properties(project, "dependencies")
+
+    echo "{len(dependencies)} Dependencies:"
+    for dep in dependencies {
+        const target = get_project_property(project, "dependencies", dep)
+        echo "- {dep} ({target})"
+    }
+}
