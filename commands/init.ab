@@ -28,7 +28,7 @@ pub fun cmd_init(arguments: [Text]): Null {
     // Create project structure
     trust {
         $ mkdir -p "{dest}"/\{lib,} $
-        $ touch "{dest}"/\{amethyst.ini,{dest},.gitignore} $
+        $ touch "{dest}"/\{amethyst.ini,{dest}.ab,.gitignore} $
 
         file_write("{dest}/.gitignore", join([
             "target/"
@@ -43,11 +43,11 @@ pub fun cmd_init(arguments: [Text]): Null {
             "[project]",
             "name = {project}",
             "version = 0.1.0",
-            "entry = {project}",
+            "entry = {project}.ab",
             ""
         ], "\n"))
 
-        file_write("{dest}/{dest}", join([
+        file_write("{dest}/{dest}.ab", join([
             "#!/bin/env amethyst",
             "",
             "main(args) \{",
