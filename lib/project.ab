@@ -74,6 +74,10 @@ pub fun get_project_amber() {
     const project = locate_project()
     const version = get_project_property(project[1], "amethyst", "amber-version")
 
+    if version == "system" {
+        // TODO: Add support for using system's amber
+    }
+
     if not is_available_locally(version) {
         warn("Amber {version} is not available locally.")
         info("Checking if it is available for download...")

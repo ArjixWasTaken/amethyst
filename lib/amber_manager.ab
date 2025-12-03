@@ -151,6 +151,10 @@ pub fun set_default(version: Text): Null {
 }
 
 pub fun execute_script(version: Text, script: Text, arguments: [Text]): Null {
+    if version == "system" {
+        // TODO: Add support for using system's amber
+    }
+
     if not is_available_locally(version) {
         fatal("Amber version {version} is not available locally.")
     }
