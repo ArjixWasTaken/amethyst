@@ -1,10 +1,11 @@
 import { dir_exists, file_exists, file_read } from "std/fs"
+import { input_confirm } from "std/env"
 import { starts_with, ends_with, split, split_lines, join, trim, replace } from "std/text"
 import { array_pop } from "std/array"
 
 import { parent_dir } from "./path.ab"
 import { info, warn, fatal } from "./utils.ab"
-import { is_available_locally, download } from "./amber_manager.ab"
+import { is_available_locally, is_available_remotely, download } from "./amber_manager.ab"
 
 pub fun locate_project(): [Text] {
     let cwd = trust $ pwd $
