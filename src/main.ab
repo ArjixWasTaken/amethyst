@@ -1,10 +1,10 @@
 import { array_shift } from "std/array"
-import { file_exists } from "std/fs"
-import { is_command, input_confirm } from "std/env"
+import { file_exists, temp_dir_create } from "std/fs"
+import { env_var_set, is_command, input_confirm } from "std/env"
 import { join } from "std/text"
 
 import { info, warn, fatal } from "../lib/utils.ab"
-import { locate_project, get_project_property, get_project_amber } from "../lib/project.ab"
+import { locate_project, open_ini, close_ini, get_project_property, get_project_amber, get_ini_value, set_ini_value } from "../lib/project.ab"
 import { is_available_locally, is_available_remotely, download, execute_script } from "../lib/amber_manager.ab"
 
 import { cmd_info } from "./commands/info.ab"
@@ -56,8 +56,19 @@ main(args) {
     const arg = trust array_shift(arguments)
 
     const project = locate_project()
-    if file_exists(arg) and project[0] == "yes" {
-        const version = get_project_amber()
+
+    if project[0] == "yes" {
+        const tmp_dir = temp_dir_create("amethyst.XXXXXXXXXX", true, true)?
+        env_var_set("AM_INI_DIR", tmp_dir)?
+        open_ini("{project[1]}/amethyst.ini")
+    }
+
+    if file_exists(arg) {
+        if project[0] != "yes" {
+            fatal("Cannot run scripts from outside of amethyst project")
+        }
+
+        const version = get_ini_value("amethyst", "amber-version")
 
         if is_available_locally(version) {
             execute_script(version, arg, arguments)
@@ -68,8 +79,6 @@ main(args) {
     }
 
     if {
-        // TODO: `help` doesn't work if amber is directly executing this file
-        // Maybe we should report this to the amber team?
         arg == "--help":  show_help_and_exit()
         arg == "amber":   cmd_amber(arguments)
         arg == "add":     cmd_deps_add(arguments)

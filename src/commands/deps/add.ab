@@ -1,5 +1,6 @@
 import { array_shift, array_contains } from "std/array"
 
+import { list_ini_section_values, get_ini_value, set_ini_value } from "../../../lib/project.ab"
 import { info, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit() {
@@ -11,6 +12,11 @@ fun show_help_and_exit() {
 }
 
 pub fun cmd_deps_add(arguments: [Text]): Null {
+    const dependencies = list_ini_section_values("dependencies")
+    for dep in dependencies {
+        echo "- dep: {dep}"
+    }
+
     fatal("stub for `amethyst add [dep]`")
     exit(0)
 }
