@@ -46,7 +46,7 @@ pub fun get_amethyst_data_dir(): Text {
 
 pub fun get_amethyst_bin_dir(): Text {
     const home = trust env_var_get("HOME")
-    const path = "{home}/.local/bin/amethyst"
+    const path = "{home}/.local/bin/amethyst.bin"
 
     $ mkdir -p "{path}" $ failed {
         fatal("Failed to create {path} directory.")
