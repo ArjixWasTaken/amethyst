@@ -1,11 +1,30 @@
 import { dir_create, dir_exists, file_glob, file_write, file_exists, file_read } from "std/fs"
-import { input_confirm, env_var_get } from "std/env"
+import { input_confirm, env_var_get, env_var_test } from "std/env"
 import { starts_with, ends_with, split, split_lines, join, trim, replace } from "std/text"
 import { array_pop } from "std/array"
 
 import { parent_dir, basename } from "./path.ab"
 import { info, warn, fatal } from "./utils.ab"
 import { is_available_locally, is_available_remotely, download } from "./amber_manager.ab"
+
+pub fun require_project(): Text {
+    const result = locate_project()
+    if result[0] == "no" {
+        fatal("Failed to locate an 'amethyst.ini' file, make sure you are in a project's (sub)directory.")
+    }
+
+    if not env_var_test("AM_INI_DIR") {
+        const tmp_dir = temp_dir_create("amethyst.XXXXXXXXXX", true, true) failed {
+            fatal("Failed to create tmp dir")
+        }
+        env_var_set("AM_INI_DIR", tmp_dir) failed {
+            fatal("Failed to set env var")
+        }
+        open_ini("{result[1]}/amethyst.ini")
+    }
+
+    return result[1]
+}
 
 pub fun locate_project(): [Text] {
     let cwd = trust $ pwd $
@@ -227,7 +246,7 @@ pub fun get_project_property(project: Text, section: Text, property: Text): Text
 
 pub fun get_project_amber() {
     const project = locate_project()
-    const version = get_project_property(project[1], "amethyst", "amber-version")
+    const version = get_ini_value("amethyst", "amber-version")
 
     if version == "system" {
         // TODO: Add support for using system's amber

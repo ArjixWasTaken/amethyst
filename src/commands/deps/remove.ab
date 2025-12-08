@@ -1,5 +1,5 @@
 import { array_shift, array_contains } from "std/array"
-
+import { require_project } from "../../../lib/project.ab"
 import { info, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit() {
@@ -11,6 +11,7 @@ fun show_help_and_exit() {
 }
 
 pub fun cmd_deps_remove(arguments: [Text]): Null {
+    const project = require_project()
     fatal("stub for `amethyst remove [dep]`")
     exit(0)
 }

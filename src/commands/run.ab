@@ -3,8 +3,9 @@ import { info, fatal } from "../../lib/utils.ab"
 import { require_project, get_ini_value } from "../../lib/project.ab"
 import { get_amethyst_data_dir } from "../../lib/environment.ab"
 import { relative } from "../../lib/path.ab"
+import { execute_script } from "../../lib/amber_manager.ab"
 
-pub fun cmd_build(arguments: [Text]): Null {
+pub fun cmd_run(arguments: [Text]): Null {
     const project = require_project()
 
     const name = get_ini_value("project", "name")
@@ -25,8 +26,9 @@ pub fun cmd_build(arguments: [Text]): Null {
     const data_dir = get_amethyst_data_dir()
     const version = get_ini_value("amethyst", "amber-version")
 
-    const amber = "{data_dir}/amber/amber.{version}.bin"
-    trust $ exec "{amber}" build "{entry}" "{target}/{name}.sh" $
-
+    execute_script(version, entry, arguments)
+    
+    // execute_script uses exec, so really, this *is* unreachable
+    // but just in case
     exit(0)
 }

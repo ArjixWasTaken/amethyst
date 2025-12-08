@@ -1,5 +1,8 @@
 import { array_shift, array_contains } from "std/array"
+import { dir_exists, dir_create, file_write } from "std/fs"
+import { file_download } from "std/http"
 
+import { require_project, list_ini_section_properties } from "../../../lib/project.ab"
 import { info, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit() {
@@ -14,6 +17,31 @@ fun show_help_and_exit() {
 // TODO: add an update command, to bump the .lock file
 
 pub fun cmd_deps_install(arguments: [Text]): Null {
-    fatal("stub for `amethyst install`")
+    const project = require_project()
+
+    const modules = "{project}/amethyst_modules"
+    trust dir_create(modules)
+    trust file_write("{modules}/.gitignore", "*")
+
+    const vendor = "{project}/vendor"
+    trust $ rm -rf "{vendor}" $
+    trust dir_create(vendor)
+    trust file_write("{vendor}/.gitignore", "*")
+
+    const dependencies = list_ini_section_properties("dependencies")
+    for dep in dependencies {
+        if not dir_exists("{modules}/{dep}.git") {
+            const git = get_ini_value("dependencies", dep)
+            trust $ git clone --bare "{git}" "{modules}/{dep}.git" $
+        } else {
+            trust $ git --git-dir="{modules}/{dep}.git" fetch origin $
+        }
+
+        // TODO: Checkout specific revision/branch
+
+        trust dir_create("{vendor}/{dep}")
+        trust $ git --git-dir="{modules}/{dep}.git" worktree add -f "{vendor}/{dep}" $
+    }
+
     exit(0)
 }

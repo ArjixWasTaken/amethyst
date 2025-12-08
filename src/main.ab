@@ -9,6 +9,7 @@ import { is_available_locally, is_available_remotely, download, execute_script }
 
 import { cmd_info } from "./commands/info.ab"
 import { cmd_env } from "./commands/env.ab"
+import { cmd_run } from "./commands/run.ab"
 import { cmd_build } from "./commands/build.ab"
 import { cmd_init } from "./commands/init.ab"
 import { cmd_amber } from "./commands/amber/_mod.ab"
@@ -17,7 +18,7 @@ import { cmd_deps_remove } from "./commands/deps/remove.ab"
 import { cmd_deps_install } from "./commands/deps/install.ab"
 
 // TODO: Remove any unnecessary dependencies
-const deps = ["uname", "curl", "jq", "python"]
+const deps = ["uname", "curl", "jq", "python", "git"]
 let missing = [Text]
 
 for dep in deps {
@@ -39,6 +40,7 @@ fun show_help_and_exit(code: Num = 0) {
     echo "  add        Add a dependency to amethyst.ini"
     echo "  remove     Remove a dependency from amethyst.ini"
     echo "  install    Install the dependencies defined in amethyst.ini"
+    echo "  run        Run current project"
     echo "  build      Build current project"
     echo "  env        Generate bash env"
     echo "  amber      Manage amber versions"
@@ -68,8 +70,7 @@ main(args) {
             fatal("Cannot run scripts from outside of amethyst project")
         }
 
-        const version = get_ini_value("amethyst", "amber-version")
-
+        const version = get_project_amber()
         if is_available_locally(version) {
             execute_script(version, arg, arguments)
             // execute_script uses exec, so really, this *is* unreachable
@@ -89,6 +90,7 @@ main(args) {
         arg == "info":    cmd_info(arguments)
         arg == "env":     cmd_env(arguments)
         arg == "build":   cmd_build(arguments)
+        arg == "run":     cmd_run(arguments)
         else: show_help_and_exit(1)
     }
 }
