@@ -20,11 +20,13 @@ jobs:
           amber-version: 0.5.2-nightly-2025-12-08-8439ec5
 
       - name: Build Amethyst
-        run: amber src/main.ab -- build
+        run: |
+          amber src/main.ab -- build
+          mv target/amethyst{.sh,}
 
       - uses: svenstaro/upload-release-action@6b7fa9f267e90b50a19fef07b3596790bb941741 # 2.11.3
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/amethyst.sh
+          file: target/amethyst
           tag: ${{ github.ref_name }}
           overwrite: true
