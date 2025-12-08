@@ -2,7 +2,7 @@ import { array_shift, array_contains } from "std/array"
 import { dir_exists, dir_create, file_write } from "std/fs"
 import { file_download } from "std/http"
 
-import { require_project, list_ini_section_properties } from "../../../lib/project.ab"
+import { require_project, get_ini_value, list_ini_section_properties } from "../../../lib/project.ab"
 import { info, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit() {

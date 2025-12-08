@@ -4,7 +4,7 @@ import { env_var_set, is_command, input_confirm } from "std/env"
 import { join } from "std/text"
 
 import { info, warn, fatal } from "../lib/utils.ab"
-import { locate_project, open_ini, close_ini, get_project_property, get_project_amber, get_ini_value, set_ini_value } from "../lib/project.ab"
+import { locate_project, open_ini, close_ini, get_project_property, get_project_amber, set_ini_value } from "../lib/project.ab"
 import { is_available_locally, is_available_remotely, download, execute_script } from "../lib/amber_manager.ab"
 
 import { cmd_info } from "./commands/info.ab"
