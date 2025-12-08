@@ -15,13 +15,14 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: lens0021/setup-amber@v1.2.0
+      - uses: ArjixWasTaken/setup-amethyst-action@main
         with:
-          amber-version: 0.5.2-nightly-2025-12-08-8439ec5
+          amethyst-version: "v0.0.1"
+          enable-cache: true
 
       - name: Build Amethyst
         run: |
-          amber src/main.ab -- build
+          amethyst build
           mv target/amethyst{.sh,}
 
       - uses: svenstaro/upload-release-action@6b7fa9f267e90b50a19fef07b3596790bb941741 # 2.11.3
