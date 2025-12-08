@@ -1,6 +1,6 @@
 import { file_exists } from "std/fs"
 import { info, fatal } from "../../lib/utils.ab"
-import { require_project, get_ini_value } from "../../lib/project.ab"
+import { get_project_amber, require_project, get_ini_value } from "../../lib/project.ab"
 import { get_amethyst_data_dir } from "../../lib/environment.ab"
 import { relative } from "../../lib/path.ab"
 import { execute_script } from "../../lib/amber_manager.ab"
@@ -24,7 +24,7 @@ pub fun cmd_run(arguments: [Text]): Null {
     trust $ rm -rf "{target}" && mkdir -p "{target}" $
 
     const data_dir = get_amethyst_data_dir()
-    const version = get_ini_value("amethyst", "amber-version")
+    const version = get_project_amber()
 
     execute_script(version, entry, arguments)
     

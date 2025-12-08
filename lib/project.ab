@@ -52,10 +52,10 @@ pub fun locate_project(): [Text] {
 pub fun open_ini(ini_file: Text) {
     const tmp_dir = trust env_var_get("AM_INI_DIR")
 
-    const lines = trust file_read(ini_file)
+    const lines_ = trust file_read(ini_file)
     let current_section = ""
 
-    for line in split_lines(lines) {
+    for line in split_lines(lines_) {
         const line = trim(line)
         if starts_with(line, "#") or line == "" {
             continue
@@ -168,10 +168,10 @@ pub fun get_project_properties(project: Text, section: Text): [Text] {
 
     let properties = [Text]
 
-    const lines = trust file_read(project_file)
+    const lines_ = trust file_read(project_file)
     let current_section = ""
 
-    for line in split_lines(lines) {
+    for line in split_lines(lines_) {
         const line = trim(line)
 
         if starts_with(line, "#") or line == "" {
@@ -209,10 +209,10 @@ pub fun get_project_property(project: Text, section: Text, property: Text): Text
         return ""
     }
 
-    const lines = trust file_read(project_file)
+    const lines_ = trust file_read(project_file)
     let current_section = ""
 
-    for line in split_lines(lines) {
+    for line in split_lines(lines_) {
         const line = trim(line)
 
         if starts_with(line, "#") or line == "" {
