@@ -261,8 +261,10 @@ pub fun get_project_amber() {
         }
 
         info("Amber {version} is available for download.")
-        if not input_confirm("Proceed with download?") {
-            exit(1)
+        if not env_var_test("CI") {
+            if not input_confirm("Proceed with download?") {
+                exit(1)
+            }
         }
 
         info("Downloading amber {version}...")

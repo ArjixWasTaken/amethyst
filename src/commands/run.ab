@@ -8,8 +8,6 @@ import { execute_script } from "../../lib/amber_manager.ab"
 pub fun cmd_run(arguments: [Text]): Null {
     const project = require_project()
 
-    const name = get_ini_value("project", "name")
-
     let entry = get_ini_value("project", "entry")
     if entry == "" {
         fatal("This project doesn't have a configured entry point, please specify one in your amethyst.ini")
