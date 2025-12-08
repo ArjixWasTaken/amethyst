@@ -7,25 +7,6 @@ import { parent_dir, basename } from "./path.ab"
 import { info, warn, fatal } from "./utils.ab"
 import { is_available_locally, is_available_remotely, download } from "./amber_manager.ab"
 
-pub fun require_project(): Text {
-    const result = locate_project()
-    if result[0] == "no" {
-        fatal("Failed to locate an 'amethyst.ini' file, make sure you are in a project's (sub)directory.")
-    }
-
-    if not env_var_test("AM_INI_DIR") {
-        const tmp_dir = temp_dir_create("amethyst.XXXXXXXXXX", true, true) failed {
-            fatal("Failed to create tmp dir")
-        }
-        env_var_set("AM_INI_DIR", tmp_dir) failed {
-            fatal("Failed to set env var")
-        }
-        open_ini("{result[1]}/amethyst.ini")
-    }
-
-    return result[1]
-}
-
 pub fun locate_project(): [Text] {
     let cwd = trust $ pwd $
 
@@ -47,6 +28,25 @@ pub fun locate_project(): [Text] {
     }
 
     return ["no", ""]
+}
+
+pub fun require_project(): Text {
+    const result = locate_project()
+    if result[0] == "no" {
+        fatal("Failed to locate an 'amethyst.ini' file, make sure you are in a project's (sub)directory.")
+    }
+
+    if not env_var_test("AM_INI_DIR") {
+        const tmp_dir = temp_dir_create("amethyst.XXXXXXXXXX", true, true) failed {
+            fatal("Failed to create tmp dir")
+        }
+        env_var_set("AM_INI_DIR", tmp_dir) failed {
+            fatal("Failed to set env var")
+        }
+        open_ini("{result[1]}/amethyst.ini")
+    }
+
+    return result[1]
 }
 
 pub fun open_ini(ini_file: Text) {
