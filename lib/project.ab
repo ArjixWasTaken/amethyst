@@ -1,5 +1,5 @@
-import { dir_create, dir_exists, file_glob, file_write, file_exists, file_read } from "std/fs"
-import { input_confirm, env_var_get, env_var_test } from "std/env"
+import { temp_dir_create, dir_create, dir_exists, file_glob, file_write, file_exists, file_read } from "std/fs"
+import { input_confirm, env_var_set, env_var_get, env_var_test } from "std/env"
 import { starts_with, ends_with, split, split_lines, join, trim, replace } from "std/text"
 import { array_pop } from "std/array"
 
@@ -28,25 +28,6 @@ pub fun locate_project(): [Text] {
     }
 
     return ["no", ""]
-}
-
-pub fun require_project(): Text {
-    const result = locate_project()
-    if result[0] == "no" {
-        fatal("Failed to locate an 'amethyst.ini' file, make sure you are in a project's (sub)directory.")
-    }
-
-    if not env_var_test("AM_INI_DIR") {
-        const tmp_dir = temp_dir_create("amethyst.XXXXXXXXXX", true, true) failed {
-            fatal("Failed to create tmp dir")
-        }
-        env_var_set("AM_INI_DIR", tmp_dir) failed {
-            fatal("Failed to set env var")
-        }
-        open_ini("{result[1]}/amethyst.ini")
-    }
-
-    return result[1]
 }
 
 pub fun open_ini(ini_file: Text) {
@@ -82,6 +63,25 @@ pub fun open_ini(ini_file: Text) {
 
         trust file_write("{tmp_dir}/{current_section}/{key}", value)
     }
+}
+
+pub fun require_project(): Text {
+    const result = locate_project()
+    if result[0] == "no" {
+        fatal("Failed to locate an 'amethyst.ini' file, make sure you are in a project's (sub)directory.")
+    }
+
+    if not env_var_test("AM_INI_DIR") {
+        const tmp_dir = temp_dir_create("amethyst.XXXXXXXXXX", true, true) failed {
+            fatal("Failed to create tmp dir")
+        }
+        env_var_set("AM_INI_DIR", tmp_dir) failed {
+            fatal("Failed to set env var")
+        }
+        open_ini("{result[1]}/amethyst.ini")
+    }
+
+    return result[1]
 }
 
 pub fun close_ini(ini_file: Text) {
