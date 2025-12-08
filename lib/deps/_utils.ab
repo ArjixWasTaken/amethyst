@@ -1,5 +1,5 @@
 import { info, fatal } from "../utils.ab"
-import { get_project_property, get_project_properties } from "../project.ab"
+import { locate_project, get_project_property, get_project_properties } from "../project.ab"
 
 pub fun list_deps() {
     const project = locate_project()
