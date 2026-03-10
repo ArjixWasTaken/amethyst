@@ -248,10 +248,6 @@ pub fun get_project_amber() {
     const project = locate_project()
     const version = get_ini_value("amethyst", "amber-version")
 
-    if version == "system" {
-        // TODO: Add support for using system's amber
-    }
-
     if not is_available_locally(version) {
         if is_system_amber_correct(version) {
             return "system"
