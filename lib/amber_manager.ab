@@ -32,21 +32,33 @@ pub fun get_local_versions(): [Text] {
     return amber_bins
 }
 
-pub fun is_system_amber_correct(version: Text): Bool {
-    const data_dir = get_amethyst_data_dir()
-    let versionString = $ amber --version $ failed {
-        return false
-    }
-
-    if text_contains(versionString, version) {
-        info("Found system-wide {versionString}")
-        return true
-    } else {
-        return false
+pub fun get_system_amber() {
+    return $ which amber $ failed {
+        return ""
     }
 }
 
+pub fun is_system_amber_correct(version: Text): Bool {
+    const amber = get_system_amber()
+    if amber == "" {
+        return false
+    }
+
+    let versionString = $ {amber} --version $ failed {
+        return false
+    }
+
+    return text_contains(versionString, version)
+}
+
 pub fun is_available_locally(version: Text): Bool {
+    if version == "system" {
+        if get_system_amber() == "" {
+            fatal("Failed to detect system amber")
+        }
+        return true
+    }
+
     const data_dir = get_amethyst_data_dir()
     $ mkdir -p "{data_dir}/amber" $ failed {
         fatal("Failed to create {data_dir}/amber directory.")
@@ -165,16 +177,15 @@ pub fun set_default(version: Text): Null {
 }
 
 pub fun execute_script(version: Text, script: Text, arguments: [Text]): Null {
-    if version == "system" {
-        // TODO: Add support for using system's amber
-    }
-
     if not is_available_locally(version) {
         fatal("Amber version {version} is not available locally.")
     }
 
     const data_dir = get_amethyst_data_dir()
-    const amber = "{data_dir}/amber/amber.{version}.bin"
+    let amber = "{data_dir}/amber/amber.{version}.bin"
+    if version == "system" {
+        amber = get_system_amber()
+    }
 
     trust $ exec "{amber}" run "{script}" "{arguments}" $
 }
