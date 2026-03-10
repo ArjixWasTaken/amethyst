@@ -1,4 +1,4 @@
-{ pkgs, stdenv, ... }:
+{ pkgs, stdenv, amber-lang, ... }:
 
 stdenv.mkDerivation {
   name = "amethyst";
