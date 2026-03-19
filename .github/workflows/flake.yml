@@ -1,0 +1,25 @@
+name: "Build Nix flake for Amethyst"
+
+on:
+  push:
+    paths:
+      - flake.nix
+      - flake.lock
+      - 'src/**'
+      - 'lib/**'
+
+jobs:
+  build-flake:
+    name: Build Nix flake
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Nix
+        uses: cachix/install-nix-action@v20
+      - name: Build flake
+        run: |
+          nix build .#default
+      - name: Test flake
+        run: |
+          nix run .#default -- --help
