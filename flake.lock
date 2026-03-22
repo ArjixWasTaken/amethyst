@@ -25,16 +25,16 @@
     "amethyst-bootstrap": {
       "flake": false,
       "locked": {
-        "lastModified": 1765228764,
-        "narHash": "sha256-p9hx8/c3wR9xTsltUMBYRRjw9Uw2PwSoPNIbuFLpLTE=",
-        "owner": "ArjixWasTaken",
+        "lastModified": 1774155322,
+        "narHash": "sha256-Ky5+S9Z4QM12g6mjoEK5jwssWa74DMb2E9eXf5pX1A0=",
+        "owner": "thesola10",
         "repo": "amethyst",
-        "rev": "8405d5520b697ce03bc19c3b613481dde1bb3f09",
+        "rev": "05f1aaa3006978ce1f6210864b163e0af4062c55",
         "type": "github"
       },
       "original": {
-        "owner": "ArjixWasTaken",
-        "ref": "v0.0.1",
+        "owner": "thesola10",
+        "ref": "bootstrap",
         "repo": "amethyst",
         "type": "github"
       }

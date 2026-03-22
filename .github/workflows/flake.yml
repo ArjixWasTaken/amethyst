@@ -20,6 +20,6 @@ jobs:
       - name: Build flake
         run: |
           nix build .#default
-      - name: Test flake
+      - name: Check that flake can build itself
         run: |
-          nix run .#default -- --help
+          nix flake check

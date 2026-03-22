@@ -24,8 +24,13 @@ pub fun cmd_build(arguments: [Text]): Null {
 
     const data_dir = get_amethyst_data_dir()
     const version = get_project_amber()
+    let amber = ""
 
-    const amber = "{data_dir}/amber/amber.{version}.bin"
+    if version == "system" {
+        amber = "amber"
+    } else {
+        amber = "{data_dir}/amber/amber.{version}.bin"
+    }
     trust $ exec "{amber}" build "{entry}" "{target}/{name}.sh" $
 
     exit(0)
