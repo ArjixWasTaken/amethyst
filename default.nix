@@ -1,25 +1,14 @@
 { pkgs, stdenv, amber-lang, amethyst-bootstrap, ... }:
 
-stdenv.mkDerivation {
-  name = "amethyst";
+pkgs.callPackage ./nix/buildAmethystApplication.nix {
+  pname = "amethyst";
+  amethyst = amethyst-bootstrap;
 
   src = ./.;
-
-  buildPhase = ''
-    mkdir -p /tmp/.local/share/amethyst/amber
-    ln -s ${amber-lang}/bin/amber /tmp/.local/share/amethyst/amber/amber.${amber-lang.version}.bin
-    HOME=/tmp amethyst build
-  '';
-
-  installPhase = ''
-    install -Dm755 target/amethyst.sh $out/bin/amethyst
-  '';
-
-  nativeBuildInputs =
-    [ amber-lang
-      amethyst-bootstrap
-    ];
+  vendorHash = "sha256-rTXHj8ub/bEa7H83pdGuR9o7CaHn/0Jcyx4O+MArewU=";
 
   propagatedBuildInputs = with pkgs;
-    [ curl jq python3 git ];
+    [ curl jq python3 git bc ];
+
+  passthru.buildAmethystApplication = pkgs.callPackage ./nix/buildAmethystApplication.nix;
 }
