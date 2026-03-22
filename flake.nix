@@ -34,7 +34,7 @@
     in
     { packages.default = pkgs.amethyst;
 
-      packages.selfBootstrap = pkgs.amethyst.buildAmethystApplication {
+      checks.selfBootstrap = pkgs.amethyst.buildAmethystApplication {
         src = ./.;
         pname = "amethyst";
         vendorHash = "sha256-/A6lintzCKLvNOs55Up091Tu5xJJWTVN/B5wSwgmOyc=";

@@ -22,6 +22,8 @@
   # Don't know what to put in here? Leave it empty and Nix will give you the
   # correct hash.
 , vendorHash
+
+, passthru ? {}
 , ... }@as:
 
 let
@@ -51,5 +53,5 @@ stdenv.mkDerivation {
     install -Dm755 target/$project_name.sh $out/bin/$project_name
   '';
 
-  passthru = { inherit vendor; };
+  passthru = { inherit vendor; } // passthru;
 }
