@@ -6,10 +6,10 @@ import { require_project, get_ini_value, list_ini_section_properties } from "../
 import { info, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit() {
-    echo "Usage: amethyst install"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h    Show this help message and exit"
+    echo("Usage: amethyst install")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
     exit(0)
 }
 

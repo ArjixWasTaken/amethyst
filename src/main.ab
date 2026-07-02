@@ -32,22 +32,22 @@ if len(missing) > 0 {
 }
 
 fun show_help_and_exit(code: Num = 0) {
-    echo "Usage: amethyst <command> [options]"
-    echo ""
-    echo "Commands:"
-    echo "  init       Bootstrap a new amber project"
-    echo "  info       Display information about the current amber project"
-    echo "  add        Add a dependency to amethyst.ini"
-    echo "  remove     Remove a dependency from amethyst.ini"
-    echo "  install    Install the dependencies defined in amethyst.ini"
-    echo "  run        Run current project"
-    echo "  build      Build current project"
-    echo "  env        Generate bash env"
-    echo "  amber      Manage amber versions"
-    echo "  deps       Manage dependencies"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h    Show this help message and exit"
+    echo("Usage: amethyst <command> [options]")
+    echo("")
+    echo("Commands:")
+    echo("  init       Bootstrap a new amber project")
+    echo("  info       Display information about the current amber project")
+    echo("  add        Add a dependency to amethyst.ini")
+    echo("  remove     Remove a dependency from amethyst.ini")
+    echo("  install    Install the dependencies defined in amethyst.ini")
+    echo("  run        Run current project")
+    echo("  build      Build current project")
+    echo("  env        Generate bash env")
+    echo("  amber      Manage amber versions")
+    echo("  deps       Manage dependencies")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
     exit(code)
 }
 
