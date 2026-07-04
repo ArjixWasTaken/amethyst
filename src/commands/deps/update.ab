@@ -1,0 +1,61 @@
+import { array_shift, array_contains } from "std/array"
+import { dir_exists, dir_create } from "std/fs"
+import { env_var_get, env_var_set, env_var_test } from "std/env"
+import { file_download } from "std/http"
+import { info, fatal } from "../../../lib/utils.ab"
+
+import { require_project, locate_project, get_ini_value, list_ini_section_properties } from "../../../lib/project.ab"
+
+fun show_help_and_exit() {
+    echo("Usage: amethyst update [package(s)]")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
+    exit(0)
+}
+
+pub fun cmd_deps_update(arguments: [Text]): Null {
+    const project = require_project()
+
+    let dependencies = [Text];
+
+    if len(arguments) > 0 {
+        for arg in arguments {
+            if len(get_ini_value("dependencies", arg)) != 0:
+                dependencies += [ arg ]
+            else:
+                warn("Could not resolve '{arg}' from [dependencies]")
+        }
+    } else {
+        dependencies = list_ini_section_properties("dependencies")
+    }
+
+    if len(dependencies) == 0:
+        fatal("No dependencies to update")
+
+    for dep in dependencies {
+        cd("{project}/vendor/{dep}") failed {
+            fatal("Failed to change directory to 'vendor/{dep}")
+        }
+        const dep_project = locate_project()
+
+        if dep_project[0] == "no":
+            fatal("Could not find Amethyst dependency structure")
+        
+        const current_version = trust $ awk '\$1 == "version" \{print \$3}' amethyst.ini $
+
+        trust silent $ git pull $
+        if status() > 0 {
+            fatal("Failed to update '{dep}'")
+        } else {
+            require_project()
+            const version = trust $ awk '\$1 == "version" \{print \$3}' amethyst.ini $
+            if version != current_version:
+                info("Updated '{dep}' ({current_version} -> {version})")
+            else:
+                info("'{dep}' is already up to date ({version})")
+        }
+    }
+
+    exit(0)
+}

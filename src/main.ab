@@ -1,5 +1,5 @@
 import { array_shift } from "std/array"
-import { file_exists, temp_dir_create } from "std/fs"
+import { file_exists, file_read, temp_dir_create } from "std/fs"
 import { env_var_set, is_command, input_confirm } from "std/env"
 import { join } from "std/text"
 
@@ -16,7 +16,7 @@ import { cmd_amber } from "./commands/amber/_mod.ab"
 import { cmd_deps_add } from "./commands/deps/add.ab"
 import { cmd_deps_remove } from "./commands/deps/remove.ab"
 import { cmd_deps_install } from "./commands/deps/install.ab"
-
+import { cmd_deps_update } from "./commands/deps/update.ab"
 // TODO: Remove any unnecessary dependencies
 const deps = ["uname", "curl", "jq", "python", "git"]
 let missing = [Text]
@@ -40,6 +40,7 @@ fun show_help_and_exit(code: Num = 0) {
     echo("  add        Add a dependency to amethyst.ini")
     echo("  remove     Remove a dependency from amethyst.ini")
     echo("  install    Install the dependencies defined in amethyst.ini")
+    echo("  update     Update the dependencies from amethyst.ini")
     echo("  run        Run current project")
     echo("  build      Build current project")
     echo("  env        Generate bash env")
@@ -84,7 +85,18 @@ main(args) {
         arg == "amber":   cmd_amber(arguments)
         arg == "add":     cmd_deps_add(arguments)
         arg == "remove":  cmd_deps_remove(arguments)
-        arg == "install": cmd_deps_install(arguments)
+        arg == "install" { 
+            lock() failed {
+                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            }
+            cmd_deps_install(arguments)
+        }
+        arg == "update" { 
+            lock() failed {
+                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            }
+            cmd_deps_update(arguments)
+        }
         
         arg == "init":    cmd_init(arguments)
         arg == "info":    cmd_info(arguments)
