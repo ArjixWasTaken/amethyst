@@ -37,19 +37,15 @@ pub fun cmd_deps_update(arguments: [Text]): Null {
         cd("{project}/vendor/{dep}") failed {
             fatal("Failed to change directory to 'vendor/{dep}")
         }
-        const dep_project = locate_project()
-
-        if dep_project[0] == "no":
-            fatal("Could not find Amethyst dependency structure")
-        
-        const current_version = trust $ awk '\$1 == "version" \{print \$3}' amethyst.ini $
+        require_project()
+        const current_version = get_ini_value("project", "version")
 
         trust silent $ git pull $
         if status() > 0 {
             fatal("Failed to update '{dep}'")
         } else {
             require_project()
-            const version = trust $ awk '\$1 == "version" \{print \$3}' amethyst.ini $
+            const version = get_ini_value("project", "version")
             if version != current_version:
                 info("Updated '{dep}' ({current_version} -> {version})")
             else:

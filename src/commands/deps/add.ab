@@ -1,6 +1,8 @@
 import { array_shift, array_contains } from "std/array"
-import { require_project } from "../../../lib/project.ab"
+import { split } from "std/text"
+import { require_project, set_ini_value, close_ini, list_ini_section_properties } from "../../../lib/project.ab"
 import { info, fatal } from "../../../lib/utils.ab"
+import { dir_create, file_write } from "std/fs"
 
 fun show_help_and_exit() {
     echo("Usage: amethyst add github:user/repo:ref")
@@ -11,7 +13,59 @@ fun show_help_and_exit() {
 }
 
 pub fun cmd_deps_add(arguments: [Text]): Null {
+    if len(arguments) == 0 or len(arguments[0]) == 0:
+        fatal("Expected at least one argument")
+    
     const project = require_project()
-    fatal("stub for `amethyst add [dep]`")
-    exit(0)
+    const installed_deps = list_ini_section_properties("dependencies")
+    
+
+    const modules = "{project}/amethyst_modules"
+    trust dir_create(modules)
+    trust file_write("{modules}/.gitignore", "*")
+    
+    const vendor = "{project}/vendor"
+    trust rm(vendor, true, true)
+    trust dir_create(vendor)
+    trust file_write("{vendor}/.gitignore", "*")
+
+    for arg in arguments {
+        const parts = split(arguments[0], ":")
+
+        if len(parts) < 2:
+            fatal("Invalid format: '{arg}'")
+        
+        let user = ""
+        let repo = ""
+        let repo_url = ""
+        
+        if {
+            // todo: other sources?
+            parts[0] == "github" {
+                [user, repo] = split(parts[1], "/")
+
+                repo_url = "https://github.com/{user}/{repo}.git"
+
+                if array_contains(installed_deps, repo):
+                    fatal("'{repo}' is already defined in {project}/amethyst.ini")
+
+                trust silent $ git ls-remote --exit-code "{repo_url}" $
+
+                if status() != 0:
+                    fatal("Couldn't access the repository '{parts[1]}'")
+
+                set_ini_value("dependencies", repo, repo_url)
+            }
+            else: fatal("Unsupported dependency source")
+        }
+
+        trust $ git clone --bare "{repo_url}" "{modules}/{repo}.git" $
+                        
+        trust dir_create("{vendor}/{repo}")
+
+        trust $ git --git-dir="{modules}/{repo}.git" worktree add -f "{vendor}/{repo}" $
+
+        info("Added '{repo}'")
+    }
+    close_ini("{project}/amethyst.ini")
 }

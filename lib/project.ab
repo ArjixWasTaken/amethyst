@@ -156,6 +156,9 @@ pub fun get_ini_value(section: Text, property: Text): Text {
 pub fun set_ini_value(section: Text, property: Text, value: Text) {
     const tmp_dir = trust env_var_get("AM_INI_DIR")
 
+    if not dir_exists("{tmp_dir}/{section}"):
+        trust dir_create("{tmp_dir}/{section}")
+        
     const path = "{tmp_dir}/{section}/{property}"
     trust file_write(path, value)
 }

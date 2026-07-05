@@ -24,7 +24,7 @@ pub fun cmd_deps_install(arguments: [Text]): Null {
             if len(get_ini_value("dependencies", arg)) != 0:
                 dependencies += [ arg ]
             else:
-                warn("Could not resolve '{arg}' from [dependencies]")
+                fatal("Could not resolve '{arg}' from [dependencies]")
         }
     } else {
         dependencies = list_ini_section_properties("dependencies")
