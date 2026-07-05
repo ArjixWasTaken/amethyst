@@ -1,6 +1,15 @@
-import { file_glob } from "std/fs"
-
+import { split } from "std/text"
 import { fatal } from "./utils.ab"
+
+pub fun file_glob(path: Text): [Text] {
+    const output = [Text]
+    trust $ 
+        shopt -s nullglob
+        {nameof(output)}=({path})
+        shopt -u nullglob
+    $
+    return output
+}
 
 pub fun relative(path: Text): Text {
     return trust $ python -c "print(__import__('os').path.relpath(\\"{path}\\", \\".\\"))" $
