@@ -41,7 +41,7 @@ fun show_help_and_exit(code: Num = 0) {
     echo("  remove     Remove a dependency from amethyst.ini")
     echo("  install    Install the dependencies defined in amethyst.ini")
     echo("  update     Update the dependencies from amethyst.ini")
-    echo("  run        Run current project")
+    echo("  run        Run project's main entry or any defined script")
     echo("  build      Build current project")
     echo("  env        Generate bash env")
     echo("  amber      Manage amber versions")
