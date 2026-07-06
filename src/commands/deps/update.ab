@@ -40,19 +40,21 @@ pub fun cmd_deps_update(arguments: [Text]): Null {
         cd("{project}/vendor/{dep}") failed {
             fatal("Failed to change directory to 'vendor/{dep}")
         }
-        require_project()
-        const current_version = get_ini_value("project", "version")
+        // todo: fix dep version; using require_project() doesn't open dep's ini but project's one
+        //require_project()
+        //const current_version = get_ini_value("project", "version")
 
         const git_output = trust $ git pull 2>&1 $
         if status() > 0 {
             fatal("Failed to update '{dep}':\n{git_output}")
         } else {
-            require_project()
-            const version = get_ini_value("project", "version")
-            if version != current_version:
-                info("Updated '{dep}' ({current_version} -> {version})")
-            else:
-                info("'{dep}' is already up to date ({version})")
+            // require_project()
+            //const version = get_ini_value("project", "version")
+            //if version != current_version:
+                info("Updated '{dep}'")
+            // ({current_version} -> {version})")
+            //else:
+            //    info("'{dep}' is already up to date ({version})")
         }
     }
 
