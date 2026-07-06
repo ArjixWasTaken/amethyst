@@ -1,11 +1,43 @@
-import { file_exists } from "std/fs"
+import { file_exists, file_read } from "std/fs"
 import { info, fatal } from "../../lib/utils.ab"
-import { get_project_amber, require_project, get_ini_value } from "../../lib/project.ab"
+import { get_project_amber, require_project, get_ini_value, list_ini_section_properties } from "../../lib/project.ab"
+import { array_contains } from "std/array"
 import { get_amethyst_data_dir } from "../../lib/environment.ab"
+import { text_contains } from "std/text"
 import { relative } from "../../lib/path.ab"
 
+const default_target = "bash-4.3, bash-3.2, zsh, ksh"
+
+fun show_help_and_exit() {
+    echo("Usage: amethyst build [target]")
+    echo("")
+    echo("Supported targets: {default_target}")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
+    exit(0)
+}
+
 pub fun cmd_build(arguments: [Text]): Null {
+    if array_contains(arguments, "-h") or array_contains(arguments, "--help"):
+        show_help_and_exit()
+
     const project = require_project()
+
+    let project_target = get_ini_value("project", "target")
+    if project_target == "" or project_target == "any":
+            project_target = default_target
+    
+    let target = "bash-4.3"
+
+    if len(arguments) == 1 {
+        if not array_contains(["bash-4.3", "bash-3.2", "zsh", "ksh"], arguments[0]):
+            fatal("Invalid shell target. Supported targets are: {default_target}")
+        target = arguments[0];
+    }
+
+    if not text_contains(project_target, target):
+        fatal("This project doesn't support shell target '{target}'") 
 
     const name = get_ini_value("project", "name")
 
@@ -19,14 +51,27 @@ pub fun cmd_build(arguments: [Text]): Null {
         fatal("{entry} does not exist")
     }
 
-    const target = "{project}/target"
-    trust $ rm -rf "{target}" && mkdir -p "{target}" $
+    const target_dir = "{project}/target"
+    trust $ rm -rf "{target_dir}" && mkdir -p "{target_dir}" $
 
     const data_dir = get_amethyst_data_dir()
     const version = get_project_amber()
 
+    for dep in list_ini_section_properties("dependencies") {
+        const dep_manifest = silent file_read("{project}/vendor/{dep}/amethyst.ini") failed {
+            fatal("Could not find amethyst.ini for '{dep}'")
+        }
+
+        if text_contains(dep_manifest, "target =") and 
+           not text_contains(dep_manifest, "target = any") and 
+           not text_contains(dep_manifest, target):
+            fatal("Dependency '{dep}' doesn't support shell target '{target}'")
+
+    }
+
     const amber = "{data_dir}/amber/amber.{version}.bin"
-    trust $ exec "{amber}" build "{entry}" "{target}/{name}.sh" $
+
+    trust $ exec "{amber}" build "{entry}" "{target_dir}/{name}.sh" --target "{target}" $
 
     exit(0)
 }

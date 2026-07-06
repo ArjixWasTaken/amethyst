@@ -4,18 +4,21 @@ import { require_project, set_ini_value, close_ini, list_ini_section_properties 
 import { info, fatal } from "../../../lib/utils.ab"
 import { dir_create, file_write } from "std/fs"
 
-fun show_help_and_exit() {
+fun show_help_and_exit(code: Int = 0) {
     echo("Usage: amethyst add github:user/repo:ref")
     echo("")
     echo("Options:")
     echo("  --help, -h    Show this help message and exit")
-    exit(0)
+    exit(code)
 }
 
 pub fun cmd_deps_add(arguments: [Text]): Null {
     if len(arguments) == 0 or len(arguments[0]) == 0:
-        fatal("Expected at least one argument")
+        show_help_and_exit(1)
     
+    if array_contains(arguments, "-h") or array_contains(arguments, "--help"):
+        show_help_and_exit()
+
     const project = require_project()
     const installed_deps = list_ini_section_properties("dependencies")
     

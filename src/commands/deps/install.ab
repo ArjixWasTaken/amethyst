@@ -12,9 +12,12 @@ fun show_help_and_exit() {
     echo("  --help, -h    Show this help message and exit")
     exit(0)
 }
-// TODO: add an update command, to bump the .lock file
 
 pub fun cmd_deps_install(arguments: [Text]): Null {
+
+    if array_contains(arguments, "-h") or array_contains(arguments, "--help"):
+        show_help_and_exit()
+
     const project = require_project()
 
     let dependencies = [Text];
