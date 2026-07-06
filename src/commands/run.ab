@@ -7,10 +7,18 @@ import { execute_script } from "../../lib/amber_manager.ab"
 
 pub fun cmd_run(arguments: [Text]): Null {
     const project = require_project()
-
-    let entry = get_ini_value("project", "entry")
-    if entry == "" {
-        fatal("This project doesn't have a configured entry point, please specify one in your amethyst.ini")
+    let entry = ""
+    echo(arguments)
+    if len(arguments[0]) == 0 {
+        entry = get_ini_value("project", "entry")
+        if entry == "" {
+            fatal("This project doesn't have a configured entry point, please specify one in your amethyst.ini")
+        }
+    } else {
+        entry = get_ini_value("scripts", arguments[0])
+        if entry == "" {
+            fatal("Couldn't find a script named '{arguments[0]}'. Are you sure it's defined in [scripts]?")
+        }
     }
 
     entry = relative("{project}/{entry}")
