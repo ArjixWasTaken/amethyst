@@ -43,9 +43,9 @@ pub fun cmd_deps_update(arguments: [Text]): Null {
         require_project()
         const current_version = get_ini_value("project", "version")
 
-        trust silent $ git pull $
+        const git_output = trust $ git pull 2>&1 $
         if status() > 0 {
-            fatal("Failed to update '{dep}'")
+            fatal("Failed to update '{dep}':\n{git_output}")
         } else {
             require_project()
             const version = get_ini_value("project", "version")

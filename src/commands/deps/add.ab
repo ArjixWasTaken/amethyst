@@ -52,10 +52,10 @@ pub fun cmd_deps_add(arguments: [Text]): Null {
                 if array_contains(installed_deps, repo):
                     fatal("'{repo}' is already defined in {project}/amethyst.ini")
 
-                trust silent $ git ls-remote --exit-code "{repo_url}" $
+                const git_output = trust $ git ls-remote --exit-code "{repo_url}" 2>&1 $
 
                 if status() != 0:
-                    fatal("Couldn't access the repository '{parts[1]}'")
+                    fatal("Couldn't access the repository '{parts[1]}':\n{git_output}")
 
                 set_ini_value("dependencies", repo, repo_url)
             }
