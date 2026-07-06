@@ -83,8 +83,18 @@ main(args) {
     if {
         arg == "--help":  show_help_and_exit()
         arg == "amber":   cmd_amber(arguments)
-        arg == "add":     cmd_deps_add(arguments)
-        arg == "remove":  cmd_deps_remove(arguments)
+        arg == "add" {
+            lock() failed {
+                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            }
+            cmd_deps_add(arguments)
+        }
+        arg == "remove" {
+            lock() failed {
+                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            }
+            cmd_deps_remove(arguments)
+        }
         arg == "install" { 
             lock() failed {
                 fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")

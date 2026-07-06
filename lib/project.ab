@@ -163,6 +163,11 @@ pub fun set_ini_value(section: Text, property: Text, value: Text) {
     trust file_write(path, value)
 }
 
+pub fun delete_ini_property(section: Text, property: Text) {
+    const tmp_dir = trust env_var_get("AM_INI_DIR")
+    trust rm("{tmp_dir}/{section}/{property}")
+}
+
 pub fun get_project_properties(project: Text, section: Text): [Text] {
     const project_file = "{project}/amethyst.ini"
     if not file_exists(project_file) {
