@@ -1,7 +1,7 @@
-import { file_exists, file_extract, file_glob } from "std/fs"
+import { file_exists, file_extract, file_glob, symlink_create } from "std/fs"
 import { array_contains } from "std/array"
 import { file_download } from "std/http"
-import { slice } from "std/text"
+import { slice, text_contains } from "std/text"
 
 import { info, fatal } from "./utils.ab"
 import { get_amber_tags } from "./github.ab"
@@ -30,6 +30,20 @@ pub fun get_local_versions(): [Text] {
     }
 
     return amber_bins
+}
+
+pub fun is_system_amber_correct(version: Text): Bool {
+    const data_dir = get_amethyst_data_dir()
+    let versionString = $ amber --version $ failed {
+        return false
+    }
+
+    if text_contains(versionString, version) {
+        info("Found system-wide {versionString}")
+        return true
+    } else {
+        return false
+    }
 }
 
 pub fun is_available_locally(version: Text): Bool {
