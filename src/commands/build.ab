@@ -52,11 +52,6 @@ pub fun cmd_build(arguments: [Text]): Null {
         fatal("{entry} does not exist")
     }
 
-    const target_dir = "{project}/target"
-    trust $ rm -rf "{target_dir}" && mkdir -p "{target_dir}" $
-
-    const data_dir = get_amethyst_data_dir()
-    const version = get_project_amber()
 
     for dep in list_ini_section_properties("dependencies") {
         const dep_manifest = silent file_read("{project}/vendor/{dep}/amethyst.ini") failed {
@@ -70,9 +65,23 @@ pub fun cmd_build(arguments: [Text]): Null {
 
     }
 
-    const amber = "{data_dir}/amber/amber.{version}.bin"
+    const target_dir = "{project}/target"
+    trust $ rm -rf "{target_dir}" && mkdir -p "{target_dir}" $
 
-    trust $ exec "{amber}" build "{entry}" "{target_dir}/{name}.sh" --target "{target}" $
+    const data_dir = get_amethyst_data_dir()
+    const version = get_project_amber()
+
+    let amber = "{data_dir}/amber/amber.{version}.bin"
+    if version == "system" {
+        amber = get_system_amber()
+    }
+
+    const amber_help = trust $ "{amber}" --help $
+    if text_contains(amber_help, "target shell") {
+        trust $ exec "{amber}" build "{entry}" "{target_dir}/{name}.sh" --target "{target}" $
+    } else {
+        trust $ exec "{amber}" build "{entry}" "{target_dir}/{name}.sh" $
+    }
 
     exit(0)
 }
