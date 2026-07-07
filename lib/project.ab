@@ -5,7 +5,7 @@ import { array_pop } from "std/array"
 
 import { parent_dir, basename, file_glob } from "./path.ab"
 import { info, warn, fatal } from "./utils.ab"
-import { is_available_locally, is_available_remotely, download } from "./amber_manager.ab"
+import { is_available_locally, is_available_remotely, is_system_amber_correct, download } from "./amber_manager.ab"
 
 pub fun locate_project(): [Text] {
     let cwd = trust $ pwd $
@@ -256,11 +256,11 @@ pub fun get_project_amber() {
     const project = locate_project()
     const version = get_ini_value("amethyst", "amber-version")
 
-    if version == "system" {
-        // TODO: Add support for using system's amber
-    }
-
     if not is_available_locally(version) {
+        if is_system_amber_correct(version) {
+            return "system"
+        }
+
         warn("Amber {version} is not available locally.")
         info("Checking if it is available for download...")
 

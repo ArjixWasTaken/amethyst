@@ -5,6 +5,7 @@ import { array_contains } from "std/array"
 import { get_amethyst_data_dir } from "../../lib/environment.ab"
 import { text_contains } from "std/text"
 import { relative } from "../../lib/path.ab"
+import { get_system_amber } from "../../lib/amber_manager.ab"
 
 const default_target = "bash-4.3, bash-3.2, zsh, ksh"
 
