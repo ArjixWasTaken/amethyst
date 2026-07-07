@@ -38,8 +38,8 @@ pub fun cmd_deps_install(arguments: [Text]): Null {
         }
 
         // TODO: Checkout specific revision/branch
+        // trust $ git --git-dir="{modules}/{dep}.git" worktree add -f "{vendor}/{dep}" "{commit_sha}" $
 
-        trust dir_create("{vendor}/{dep}")
         trust $ git --git-dir="{modules}/{dep}.git" worktree add -f "{vendor}/{dep}" $
     }
 
