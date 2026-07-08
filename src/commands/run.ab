@@ -9,7 +9,7 @@ pub fun cmd_run(arguments: [Text]): Null {
     const project = require_project()
     let entry = ""
     
-    if len(arguments[0]) == 0 {
+    if len(arguments) == 0 {
         entry = get_ini_value("project", "entry")
         if entry == "" {
             fatal("This project doesn't have a configured entry point, please specify one in your amethyst.ini")
