@@ -1,7 +1,7 @@
 import { array_shift } from "std/array"
 import { file_exists, file_read, temp_dir_create } from "std/fs"
 import { env_var_set, is_command, input_confirm } from "std/env"
-import { join } from "std/text"
+import { join, replace } from "std/text"
 
 import { info, warn, fatal } from "../lib/utils.ab"
 import { locate_project, open_ini, close_ini, get_project_property, get_project_amber, set_ini_value } from "../lib/project.ab"
@@ -80,30 +80,32 @@ main(args) {
         }
     }
 
+    const project_lock = "/tmp/amethyst{replace(project[1], "/", "-")}.lock"
+
     if {
         arg == "--help":  show_help_and_exit()
         arg == "amber":   cmd_amber(arguments)
         arg == "add" {
-            lock() failed {
-                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
             }
             cmd_deps_add(arguments)
         }
         arg == "remove" {
-            lock() failed {
-                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
             }
             cmd_deps_remove(arguments)
         }
         arg == "install" { 
-            lock() failed {
-                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
             }
             cmd_deps_install(arguments)
         }
         arg == "update" { 
-            lock() failed {
-                fatal("Another instance is currently running ({trust file_read("/tmp/amethyst.lock")})")
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
             }
             cmd_deps_update(arguments)
         }
