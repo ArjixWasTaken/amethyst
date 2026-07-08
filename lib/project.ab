@@ -1,9 +1,9 @@
-import { temp_dir_create, dir_create, dir_exists, file_glob, file_write, file_exists, file_read } from "std/fs"
+import { temp_dir_create, dir_create, dir_exists, file_write, file_exists, file_read } from "std/fs"
 import { input_confirm, env_var_set, env_var_get, env_var_test } from "std/env"
 import { starts_with, ends_with, split, split_lines, join, trim, replace } from "std/text"
 import { array_pop } from "std/array"
 
-import { parent_dir, basename } from "./path.ab"
+import { parent_dir, basename, file_glob } from "./path.ab"
 import { info, warn, fatal } from "./utils.ab"
 import { is_available_locally, is_available_remotely, is_system_amber_correct, download } from "./amber_manager.ab"
 
@@ -156,8 +156,16 @@ pub fun get_ini_value(section: Text, property: Text): Text {
 pub fun set_ini_value(section: Text, property: Text, value: Text) {
     const tmp_dir = trust env_var_get("AM_INI_DIR")
 
+    if not dir_exists("{tmp_dir}/{section}"):
+        trust dir_create("{tmp_dir}/{section}")
+        
     const path = "{tmp_dir}/{section}/{property}"
     trust file_write(path, value)
+}
+
+pub fun delete_ini_property(section: Text, property: Text) {
+    const tmp_dir = trust env_var_get("AM_INI_DIR")
+    trust rm("{tmp_dir}/{section}/{property}")
 }
 
 pub fun get_project_properties(project: Text, section: Text): [Text] {

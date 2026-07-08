@@ -1,7 +1,7 @@
 import { array_shift } from "std/array"
-import { file_exists, temp_dir_create } from "std/fs"
+import { file_exists, file_read, temp_dir_create } from "std/fs"
 import { env_var_set, is_command, input_confirm } from "std/env"
-import { join } from "std/text"
+import { join, replace } from "std/text"
 
 import { info, warn, fatal } from "../lib/utils.ab"
 import { locate_project, open_ini, close_ini, get_project_property, get_project_amber, set_ini_value } from "../lib/project.ab"
@@ -16,7 +16,7 @@ import { cmd_amber } from "./commands/amber/_mod.ab"
 import { cmd_deps_add } from "./commands/deps/add.ab"
 import { cmd_deps_remove } from "./commands/deps/remove.ab"
 import { cmd_deps_install } from "./commands/deps/install.ab"
-
+import { cmd_deps_update } from "./commands/deps/update.ab"
 // TODO: Remove any unnecessary dependencies
 const deps = ["uname", "curl", "jq", "python", "git"]
 let missing = [Text]
@@ -32,22 +32,23 @@ if len(missing) > 0 {
 }
 
 fun show_help_and_exit(code: Num = 0) {
-    echo "Usage: amethyst <command> [options]"
-    echo ""
-    echo "Commands:"
-    echo "  init       Bootstrap a new amber project"
-    echo "  info       Display information about the current amber project"
-    echo "  add        Add a dependency to amethyst.ini"
-    echo "  remove     Remove a dependency from amethyst.ini"
-    echo "  install    Install the dependencies defined in amethyst.ini"
-    echo "  run        Run current project"
-    echo "  build      Build current project"
-    echo "  env        Generate bash env"
-    echo "  amber      Manage amber versions"
-    echo "  deps       Manage dependencies"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h    Show this help message and exit"
+    echo("Usage: amethyst <command> [options]")
+    echo("")
+    echo("Commands:")
+    echo("  init       Bootstrap a new amber project")
+    echo("  info       Display information about the current amber project")
+    echo("  add        Add a dependency to amethyst.ini")
+    echo("  remove     Remove a dependency from amethyst.ini")
+    echo("  install    Install the dependencies defined in amethyst.ini")
+    echo("  update     Update the dependencies from amethyst.ini")
+    echo("  run        Run project's main entry or any defined script")
+    echo("  build      Build current project")
+    echo("  env        Generate bash env")
+    echo("  amber      Manage amber versions")
+    echo("  deps       Manage dependencies")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
     exit(code)
 }
 
@@ -79,12 +80,35 @@ main(args) {
         }
     }
 
+    const project_lock = "/tmp/amethyst{replace(project[1], "/", "-")}.lock"
+
     if {
         arg == "--help":  show_help_and_exit()
         arg == "amber":   cmd_amber(arguments)
-        arg == "add":     cmd_deps_add(arguments)
-        arg == "remove":  cmd_deps_remove(arguments)
-        arg == "install": cmd_deps_install(arguments)
+        arg == "add" {
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
+            }
+            cmd_deps_add(arguments)
+        }
+        arg == "remove" {
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
+            }
+            cmd_deps_remove(arguments)
+        }
+        arg == "install" { 
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
+            }
+            cmd_deps_install(arguments)
+        }
+        arg == "update" { 
+            lock(project_lock) failed {
+                fatal("Another instance is currently running in this project ({trust file_read(project_lock)})")
+            }
+            cmd_deps_update(arguments)
+        }
         
         arg == "init":    cmd_init(arguments)
         arg == "info":    cmd_info(arguments)

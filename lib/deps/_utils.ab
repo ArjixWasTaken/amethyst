@@ -10,9 +10,9 @@ pub fun list_deps() {
     const project = project[1]
     const dependencies = get_project_properties(project, "dependencies")
 
-    echo "{len(dependencies)} Dependencies:"
+    echo("{len(dependencies)} Dependencies:")
     for dep in dependencies {
         const target = get_project_property(project, "dependencies", dep)
-        echo "- {dep} ({target})"
+        echo("- {dep} ({target})")
     }
 }

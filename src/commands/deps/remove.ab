@@ -1,17 +1,51 @@
-import { array_shift, array_contains } from "std/array"
-import { require_project } from "../../../lib/project.ab"
+import { array_contains } from "std/array"
+import { require_project, delete_ini_property, list_ini_section_properties, close_ini } from "../../../lib/project.ab"
 import { info, fatal } from "../../../lib/utils.ab"
+import { dir_exists } from "std/fs"
 
-fun show_help_and_exit() {
-    echo "Usage: amethyst remove repo"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h    Show this help message and exit"
-    exit(0)
+fun show_help_and_exit(code: Int = 0) {
+    echo("Usage: amethyst remove <package(s)>")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
+    exit(code)
 }
 
 pub fun cmd_deps_remove(arguments: [Text]): Null {
+    if len(arguments) == 0 or len(arguments[0]) == 0:
+        show_help_and_exit(1)
+
+    if array_contains(arguments, "-h") or array_contains(arguments, "--help"):
+        show_help_and_exit()
+
     const project = require_project()
-    fatal("stub for `amethyst remove [dep]`")
-    exit(0)
+    const installed_deps = list_ini_section_properties("dependencies")
+
+    if len(installed_deps) == 0:
+        fatal("No dependencies are defined in amethyst.ini")
+
+    const modules = "{project}/amethyst_modules"
+    if not dir_exists(modules):
+        fatal("amethyst_modules folder is missing")
+
+    const vendor = "{project}/vendor"
+    if not dir_exists(modules):
+        fatal("vendor folder is missing")
+    
+    for arg in arguments {
+        if not array_contains(installed_deps, arg):
+            fatal("'{arg}' is not defined in amethyst.ini")
+        
+        if not dir_exists("{modules}/{arg}.git") and 
+           not dir_exists("{vendor}/{arg}"):
+            fatal("'{arg}' is not found locally")
+        
+        delete_ini_property("dependencies", arg)    
+
+        trust rm("{modules}/{arg}.git", true)
+        trust rm("{vendor}/{arg}", true)
+
+        info("Removed '{arg}'")
+    }
+    close_ini("{project}/amethyst.ini")
 }

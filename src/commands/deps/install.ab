@@ -3,36 +3,53 @@ import { dir_exists, dir_create, file_write } from "std/fs"
 import { file_download } from "std/http"
 
 import { require_project, get_ini_value, list_ini_section_properties } from "../../../lib/project.ab"
-import { info, fatal } from "../../../lib/utils.ab"
+import { info, warn, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit() {
-    echo "Usage: amethyst install"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h    Show this help message and exit"
+    echo("Usage: amethyst install [package(s)]")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
     exit(0)
 }
 
-// TODO: a .lock file is a must
-// TODO: add an update command, to bump the .lock file
-
 pub fun cmd_deps_install(arguments: [Text]): Null {
+
+    if array_contains(arguments, "-h") or array_contains(arguments, "--help"):
+        show_help_and_exit()
+
     const project = require_project()
+
+    let dependencies = [Text];
+
+    if len(arguments) > 0 {
+        for arg in arguments {
+            if len(get_ini_value("dependencies", arg)) != 0:
+                dependencies += [ arg ]
+            else:
+                fatal("Could not resolve '{arg}' from [dependencies]")
+        }
+    } else {
+        dependencies = list_ini_section_properties("dependencies")
+    }
+
+    if len(dependencies) == 0:
+        fatal("No dependencies to install")
 
     const modules = "{project}/amethyst_modules"
     trust dir_create(modules)
     trust file_write("{modules}/.gitignore", "*")
-
+    
     const vendor = "{project}/vendor"
-    trust $ rm -rf "{vendor}" $
+    trust rm(vendor, true, true)
     trust dir_create(vendor)
     trust file_write("{vendor}/.gitignore", "*")
 
-    const dependencies = list_ini_section_properties("dependencies")
     for dep in dependencies {
         if not dir_exists("{modules}/{dep}.git") {
             const git = get_ini_value("dependencies", dep)
             trust $ git clone --bare "{git}" "{modules}/{dep}.git" $
+            info("Installed '{dep}'")
         } else {
             trust $ git --git-dir="{modules}/{dep}.git" fetch origin $
         }
