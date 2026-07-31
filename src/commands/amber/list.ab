@@ -5,11 +5,11 @@ import { get_amber_tags } from "../../../lib/github.ab"
 import { get_local_versions } from "../../../lib/amber_manager.ab"
 
 fun show_help_and_exit() {
-    echo "Usage: amethyst amber list [options]"
-    echo ""
-    echo "Options:"
-    echo "  --all,  -a    List all available amber versions"
-    echo "  --help, -h    Show this help message and exit"
+    echo("Usage: amethyst amber list [options]")
+    echo("")
+    echo("Options:")
+    echo("  --all,  -a    List all available amber versions")
+    echo("  --help, -h    Show this help message and exit")
     exit(0)
 }
 
@@ -33,7 +33,7 @@ pub fun cmd_amber_list(arguments: [Text]): Null {
     if not show_remote {
         info("Listing local amber versions:")
         for version in local_versions {
-            echo "- {version}"
+            echo("- {version}")
         }
 
         exit(0)
@@ -44,7 +44,7 @@ pub fun cmd_amber_list(arguments: [Text]): Null {
     for tag in tags {
         const is_local = array_contains(local_versions, tag)
 
-        echo "- {tag} {is_local then "[installed]" else ""}"
+        echo("- {tag} {is_local then "[installed]" else ""}")
     }
 
     exit(0)

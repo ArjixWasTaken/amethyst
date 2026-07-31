@@ -1,0 +1,62 @@
+import { array_shift, array_contains } from "std/array"
+import { dir_exists, dir_create } from "std/fs"
+import { env_var_get, env_var_set, env_var_test } from "std/env"
+import { file_download } from "std/http"
+import { info, fatal } from "../../../lib/utils.ab"
+
+import { require_project, locate_project, get_ini_value, list_ini_section_properties } from "../../../lib/project.ab"
+
+fun show_help_and_exit() {
+    echo("Usage: amethyst update [package(s)]")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
+    exit(0)
+}
+
+pub fun cmd_deps_update(arguments: [Text]): Null {
+    if array_contains(arguments, "-h") or array_contains(arguments, "--help"):
+        show_help_and_exit()
+
+    const project = require_project()
+
+    let dependencies = [Text];
+
+    if len(arguments) > 0 {
+        for arg in arguments {
+            if len(get_ini_value("dependencies", arg)) != 0:
+                dependencies += [ arg ]
+            else:
+                warn("Could not resolve '{arg}' from [dependencies]")
+        }
+    } else {
+        dependencies = list_ini_section_properties("dependencies")
+    }
+
+    if len(dependencies) == 0:
+        fatal("No dependencies to update")
+
+    for dep in dependencies {
+        cd("{project}/vendor/{dep}") failed {
+            fatal("Failed to change directory to 'vendor/{dep}")
+        }
+        // todo: fix dep version; using require_project() doesn't open dep's ini but project's one
+        //require_project()
+        //const current_version = get_ini_value("project", "version")
+
+        const git_output = trust $ git pull 2>&1 $
+        if status() > 0 {
+            fatal("Failed to update '{dep}':\n{git_output}")
+        } else {
+            // require_project()
+            //const version = get_ini_value("project", "version")
+            //if version != current_version:
+                info("Updated '{dep}'")
+            // ({current_version} -> {version})")
+            //else:
+            //    info("'{dep}' is already up to date ({version})")
+        }
+    }
+
+    exit(0)
+}

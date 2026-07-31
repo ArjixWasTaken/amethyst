@@ -35,7 +35,7 @@ pub fun cmd_init(arguments: [Text]): Null {
         // set latest amber version
         file_write("{dest}/amethyst.ini", join([
             "[amethyst]",
-            "amber-version = 0.5.1-alpha",
+            "amber-version = 0.6.0-alpha",
             "",
 
             "[project]",
@@ -49,7 +49,7 @@ pub fun cmd_init(arguments: [Text]): Null {
             "#!/bin/env amethyst",
             "",
             "main(args) \{",
-            "    echo \"Hello Amber!\"",
+            "    echo(\"Hello Amber!\")",
             "}"
         ], "\n"))
 

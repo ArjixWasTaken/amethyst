@@ -10,13 +10,13 @@ import { get_amber_tags } from "../../../lib/github.ab"
 import { get_local_versions, is_available_locally, download, delete_download, set_default } from "../../../lib/amber_manager.ab"
 
 fun show_help_and_exit(code: Num = 0) {
-    echo "Usage: amethyst amber use <version>"
-    echo ""
-    echo "Arguments:"
-    echo "  <version>     The version of amber to use"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h    Show this help message and exit"
+    echo("Usage: amethyst amber use <version>")
+    echo("")
+    echo("Arguments:")
+    echo("  <version>     The version of amber to use")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
     exit(code)
 }
 
@@ -43,13 +43,13 @@ pub fun cmd_amber_use(arguments: [Text]): Null {
     if not array_contains(tags, version) {
         info("Couldn't find version {version}, available versions are:")
         for tag in tags {
-            echo "- {tag}"
+            echo("- {tag}")
         }
 
         exit(1)
     }
 
-    echo "Using {version}"
+    echo("Using {version}")
     set_default(version)
 
     exit(0)

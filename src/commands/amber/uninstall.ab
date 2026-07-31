@@ -6,13 +6,13 @@ import { get_amber_tags } from "../../../lib/github.ab"
 import { get_local_versions, is_available_locally, download, delete_download } from "../../../lib/amber_manager.ab"
 
 fun show_help_and_exit(code: Num = 0): Null {
-    echo "Usage: amethyst amber uninstall <version> [options]"
-    echo ""
-    echo "Arguments:"
-    echo "  <version>     The version of amber to uninstall"
-    echo ""
-    echo "Options:"
-    echo "  --help,  -h    Show this help message and exit"
+    echo("Usage: amethyst amber uninstall <version> [options]")
+    echo("")
+    echo("Arguments:")
+    echo("  <version>     The version of amber to uninstall")
+    echo("")
+    echo("Options:")
+    echo("  --help,  -h    Show this help message and exit")
     exit(code)
 }
 

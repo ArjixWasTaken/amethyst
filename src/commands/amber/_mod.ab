@@ -7,16 +7,16 @@ import { cmd_amber_uninstall } from "./uninstall.ab"
 import { info, fatal } from "../../../lib/utils.ab"
 
 fun show_help_and_exit(code: Num = 0) {
-    echo "Usage: amethyst amber <command> [options]"
-    echo ""
-    echo "Commands:"
-    echo "  list          List available amber versions"
-    echo "  use           Change the default amber version"
-    echo "  install       Install a specific amber version"
-    echo "  uninstall     Remove a specific amber version"
-    echo ""
-    echo "Options:"
-    echo "  --help, -h    Show this help message and exit"
+    echo("Usage: amethyst amber <command> [options]")
+    echo("")
+    echo("Commands:")
+    echo("  list          List available amber versions")
+    echo("  use           Change the default amber version")
+    echo("  install       Install a specific amber version")
+    echo("  uninstall     Remove a specific amber version")
+    echo("")
+    echo("Options:")
+    echo("  --help, -h    Show this help message and exit")
     exit(code)
 }
 
